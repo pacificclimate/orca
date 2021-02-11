@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import click
-from pycds import Network, Variable
+
 
 @click.command()
 @click.option(
@@ -14,8 +14,6 @@ def process(connection_string):
     engine = create_engine(connection_string)
     Session = sessionmaker(engine)
     sesh = Session()
-    q = sesh.query(Network)
-    print(q.first())
 
 
 if __name__ == "__main__":
