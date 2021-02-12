@@ -8,6 +8,6 @@ Copy and paste this section into your terminal:
 python3 -m venv venv
 source venv/bin/activate
 export PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
-pip install -r requirements.txt
+pip install -r requirements.txt -r test_requirements.txt
 pip install -e .
 ```
