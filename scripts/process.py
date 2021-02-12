@@ -16,7 +16,7 @@ from orca import finder
 )
 def process(connection_string, filename):
     datafile = finder.find_filepath(connection_string, filename)
-    print(datafile)
+    print(datafile.filename)
 
 
 if __name__ == "__main__":

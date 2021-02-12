@@ -13,4 +13,7 @@ def find_filepath(connection_string, filename):
     except Exception as e:
         raise e
 
+    if datafile.count() == 0:
+        raise Exception("No file found")
+
     return datafile.first()
