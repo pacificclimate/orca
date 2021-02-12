@@ -7,7 +7,7 @@ from orca import finder
     "-x",
     "--connection-string",
     help="Database connection string",
-    default="postgres://ce_meta_ro@db3.pcic.uvic.ca/ce_meta_12f290b63791",
+    default="postgresql://httpd_meta@db3.pcic.uvic.ca/pcic_meta"
 )
 @click.option(
     "-f",
