@@ -6,7 +6,10 @@ setup(
     name="orca",
     version=".".join(str(d) for d in __version__),
     description="OPeNDAP Request Compiler Application",
-    install_requires=["sqlalchemy", "modelmeta",],
+    install_requires=[
+        "sqlalchemy",
+        "modelmeta",
+    ],
     packages=["orca"],
     zip_safe=True,
     scripts=["scripts/process.py"],
