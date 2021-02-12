@@ -10,9 +10,6 @@ from orca import finder, request_opendap
     default="postgresql://httpd_meta@db3.pcic.uvic.ca/pcic_meta",
 )
 @click.option("-f", "--filename", help="Filename to search for in DB")
-<<<<<<< HEAD
-def process(connection_string, filename):
-=======
 @click.option("-v", "--variable", help="Variable of interest")
 @click.option("-s", "--time_start", default=0, help="Start time")
 @click.option("-e", "--time_end", default=55151, help="End time")
@@ -31,7 +28,6 @@ def process(
     lat_start,
     lon_start,
 ):
->>>>>>> Build opendap url
     datafile = finder.find_filepath(connection_string, filename)
     print(datafile.filename)
     url = request_opendap.build_url(
