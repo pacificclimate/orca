@@ -13,7 +13,13 @@ from orca.finder import find_filepath
             "tasmax[0:1:55114]",
             "[91:91]",
             "[206:206]",
-        )
+        ),
+        (
+            "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc",
+            "tasmax[0:55114]",
+            "[91:91]",
+            "[206:206]",
+        ),
     ],
 )
 def test_build_url(filepath, variable, lat, lon):
