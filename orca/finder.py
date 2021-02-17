@@ -14,6 +14,6 @@ def find_filepath(connection_string, unique_id):
         raise e
 
     if datafile.count() == 0:
-        raise Exception(f"No match found with unique_id: {filename}")
+        raise Exception(f"No match found with unique_id: {unique_id}")
 
     return datafile.first().filename
