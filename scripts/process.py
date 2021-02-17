@@ -19,8 +19,8 @@ from orca.process import process_request
 @click.option(
     "-v", "--variable", help="Varible + time range string (ex. tasmax[0:55114])"
 )
-@click.option("-t", "--lat", help="Latitude slab as index (ex. [90:100])")
-@click.option("-n", "--lon", help="Longitude slab as index (ex. [90:100])")
+@click.option("-t", "--lat", help="Latitude slab as index (ex. [89:89])")
+@click.option("-n", "--lon", help="Longitude slab as index (ex. [211:211])")
 @click.option("-f", "--file", help="Output file path")
 def process(connection_string, unique_id, thredds_base, variable, lat, lon, out_file):
     """CLI for orca"""

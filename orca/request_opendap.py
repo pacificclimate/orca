@@ -3,7 +3,6 @@ from xarray import open_dataset
 
 
 def request_opendap(url, out_file):
-    # note: interestingly enough we can't actually download the url we make but can access it using a dataset obj... hmmm
     try:
         d = open_dataset(url)
         d.to_netcdf(out_file)
