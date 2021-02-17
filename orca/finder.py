@@ -3,17 +3,17 @@ from sqlalchemy.orm import sessionmaker
 from modelmeta import DataFile
 
 
-def find_filepath(connection_string, filename):
-    """Given a filename, search the ce_meta database for a match"""
+def find_filepath(connection_string, unique_id):
+    """Given a unique_id, search pcic_meta for matching filepath"""
     Session = sessionmaker(create_engine(connection_string))
     sesh = Session()
 
     try:
-        datafile = sesh.query(DataFile).filter(DataFile.unique_id == filename)
+        datafile = sesh.query(DataFile).filter(DataFile.unique_id == unique_id)
     except Exception as e:
         raise e
 
     if datafile.count() == 0:
-        raise Exception(f"No file found with unique_id: {filename}")
+        raise Exception(f"No match found with unique_id: {unique_id}")
 
-    return datafile.first()
+    return datafile.first().filename
