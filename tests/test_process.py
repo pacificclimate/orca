@@ -58,7 +58,7 @@ def test_process(thredds_base, connection_string, unique_id, variable, lat, lon)
     with NamedTemporaryFile(
         suffix=".nc", prefix="output_", dir="/tmp", delete=True, mode="w+"
     ) as out_file:
-        process_request(
+        data_output = process_request(
             connection_string,
             unique_id,
             thredds_base,
@@ -69,6 +69,4 @@ def test_process(thredds_base, connection_string, unique_id, variable, lat, lon)
         )
         filepath = find_filepath(connection_string, unique_id)
         url = build_url(thredds_base, filepath, variable, lat, lon)
-        assert open_dataset(url, engine="netcdf4") == open_dataset(
-            out_file.name, engine="netcdf4"
-        )
+        assert open_dataset(url) == open_dataset(data_output)

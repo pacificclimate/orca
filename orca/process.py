@@ -12,4 +12,4 @@ def process_request(
     url = build_url(thredds_base, filepath, variable, lat, lon)
     print(f"And now we got the url: {url}")
 
-    request_opendap(url, out_file)
+    return request_opendap(url, out_file)

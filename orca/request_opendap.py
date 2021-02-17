@@ -5,10 +5,12 @@ from xarray import open_dataset
 def request_opendap(url, out_file):
     # note: interestingly enough we can't actually download the url we make but can access it using a dataset obj... hmmm
     try:
-        d = open_dataset(url, engine="netcdf4")
+        d = open_dataset(url)
         d.to_netcdf(out_file)
     except Exception as e:
         raise e
+
+    return out_file
 
 
 def build_url(thredds_base, filepath, variable, lat, lon):
