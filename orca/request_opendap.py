@@ -11,10 +11,7 @@ def request_opendap(url, out_file):
         raise e
 
 
-def build_url(filepath, variable, lat, lon):
-    thredds_base = (
-        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets"
-    )
+def build_url(thredds_base, filepath, variable, lat, lon):
     variable_form = re.compile(r"([a-z]*)(\[\d*(:\d*){1,2}\])")
     var_name, var_time = variable_form.findall(variable)[0][:2]
 
