@@ -37,7 +37,7 @@ def test_build_url(thredds_base, filepath, variable, lat, lon):
         "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[500:1:1100][0:1:509][0:1:1067]",
     ],
 )
-def test_request_opendapp(url):
+def test_request_opendap(url):
     tmp_files = request_opendap(url)
     constraint_format = re.compile(r":(\d*)\]")
     time, lat, lon = constraint_format.findall(url)

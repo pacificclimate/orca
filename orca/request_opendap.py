@@ -8,7 +8,6 @@ from .split import split_url
 def request_opendap(url):
     data = open_dataset(url)
     size = data.nbytes
-    dmb = size * (1e-6)
 
     if size / 2 > 5e8:
         urls = split_url(url, size)
