@@ -21,9 +21,6 @@ def request_opendap(url):
         open_dataset(path).to_netcdf(tmp.name)
         output.append(tmp)
 
-    # Move to reconstruction handler?
-    (tmp.close for tmp in output)
-
     return output
 
 

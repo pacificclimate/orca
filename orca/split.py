@@ -10,7 +10,7 @@ def split_url(url, size):
     # Server error reports dataset size = dataset.nbytes/2
     b = size / 2
     # Request limit is 5e+8 bytes
-    chunks = -(-b // 5e8)  # take cieling
+    chunks = -(-b // 5e8)  # take ceiling
     total = end - start
     step = int(total // chunks)
 
