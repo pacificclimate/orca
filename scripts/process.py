@@ -21,12 +21,9 @@ from orca.process import process_request
 )
 @click.option("-t", "--lat", help="Latitude slab as index (ex. [89:89])")
 @click.option("-n", "--lon", help="Longitude slab as index (ex. [211:211])")
-@click.option("-f", "--file", help="Output file path")
-def process(connection_string, unique_id, thredds_base, variable, lat, lon, out_file):
+def process(connection_string, unique_id, thredds_base, variable, lat, lon):
     """CLI for orca"""
-    process_request(
-        connection_string, unique_id, thredds_base, variable, lat, lon, out_file
-    )
+    process_request(connection_string, unique_id, thredds_base, variable, lat, lon)
 
 
 if __name__ == "__main__":
