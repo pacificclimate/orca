@@ -1,5 +1,7 @@
 import pytest
-from orca.request_opendap import build_url
+from xarray import open_dataset
+from orca.request_opendap import build_url, request_opendap
+import numpy as np
 
 
 @pytest.mark.parametrize(
@@ -9,7 +11,7 @@ from orca.request_opendap import build_url
             "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
             "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc",
             "[91:91]",
-            "[206:206]",
+            "[206:1:206]",
         ),
     ],
 )
@@ -22,10 +24,18 @@ from orca.request_opendap import build_url
 )
 def test_build_url(thredds_base, filepath, variable, lat, lon):
     url = build_url(thredds_base, filepath, variable, lat, lon)
-    assert url.startswith(
-        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets"
-    )
-    assert url.endswith("[0:1:0][0:1:0][0:1:0]")
-    assert filepath in url
-    assert f",lat{lat}" in url
-    assert f"?lon{lon}" in url
+    assert url.startswith(f"{thredds_base}{filepath}")
+    assert url.endswith(f"{variable}{lat}{lon}")
+
+
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("url"),
+    [
+        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_HadGEM2-CC_historical+rcp45_r1i1p1_19500101-21001231.nc?tasmax[0:1:450][0:1:509][0:1:1067]",
+        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[100:1:1500][0:1:509][0:1:1067]",
+        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[500:1:1100][0:1:509][0:1:1067]",
+    ],
+)
+def test_request_opendapp(url):
+    request_opendap(url)
