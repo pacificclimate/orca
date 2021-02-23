@@ -1,13 +1,22 @@
 from .finder import find_filepath
 from .request_opendap import build_url, request_opendap
+from .utils import setup_logging
 
 
-def process_request(connection_string, unique_id, thredds_base, variable, lat, lon):
+def process_request(
+    connection_string, unique_id, thredds_base, variable, lat, lon, log_level="INFO"
+):
     """Uses orca modules to process output"""
+    logger = setup_logging(log_level)
+
+    logger.info(f"Getting the filepath")
     filepath = find_filepath(connection_string, unique_id)
-    print(f"Got the filepath:{filepath}")
+    logger.info(f"filepath: {filepath}")
 
+    logger.info(f"Building initial url")
     url = build_url(thredds_base, filepath, variable, lat, lon)
-    print(f"And now we got the url: {url}")
+    logger.info(f"url: {url}")
 
-    return request_opendap(url)
+    temp_files = request_opendap(url, logger)
+
+    return temp_files

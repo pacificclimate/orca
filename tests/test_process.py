@@ -5,6 +5,18 @@ from tempfile import NamedTemporaryFile
 from orca import process, request_opendap, finder, split
 
 
+def expected_outputs(
+    thredds_base, connection_string, unique_id, variable, lat, lon, req_limit=5e8
+):
+    filepath = finder.find_filepath(connection_string, unique_id)
+    url = request_opendap.build_url(thredds_base, filepath, variable, lat, lon)
+
+    with open_dataset(url) as data:
+        split_urls = split.split_url(url, data.nbytes, req_limit)
+
+    return url, split_urls
+
+
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("thredds_base", "connection_string", "unique_id", "lat", "lon"),
@@ -19,27 +31,16 @@ from orca import process, request_opendap, finder, split
     ],
 )
 @pytest.mark.parametrize(
-    ("variable"),
-    [
-        "tasmax[0:1:0]",
-        "tasmax[0:1:15000]",
-    ],
+    ("variable"), ["tasmax[0:1:0]", "tasmax[0:1:15000]",],
 )
 def test_process(thredds_base, connection_string, unique_id, variable, lat, lon):
     data_files = process.process_request(
-        connection_string,
-        unique_id,
-        thredds_base,
-        variable,
-        lat,
-        lon,
+        connection_string, unique_id, thredds_base, variable, lat, lon,
     )
 
-    # Prep expected output
-    filepath = finder.find_filepath(connection_string, unique_id)
-    url = request_opendap.build_url(thredds_base, filepath, variable, lat, lon)
-    data = open_dataset(url)
-    split_urls = split.split_url(url, data.nbytes)
+    url, split_urls = expected_outputs(
+        thredds_base, connection_string, unique_id, variable, lat, lon
+    )
 
     time_total = 0
     for i in range(len(data_files)):
@@ -51,4 +52,5 @@ def test_process(thredds_base, connection_string, unique_id, variable, lat, lon)
 
         data_files[i].close()
 
-    assert time_total == data.dims["time"]
+    with open_dataset(url) as data:
+        assert time_total == data.dims["time"]

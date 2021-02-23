@@ -1,8 +1,9 @@
 import pytest
 import re
 from xarray import open_dataset
+
+from orca.utils import setup_logging
 from orca.request_opendap import build_url, request_opendap
-import numpy as np
 
 
 @pytest.mark.parametrize(
@@ -17,11 +18,7 @@ import numpy as np
     ],
 )
 @pytest.mark.parametrize(
-    ("variable"),
-    [
-        "tasmax[0:1:55114]",
-        "tasmax[0:55114]",
-    ],
+    ("variable"), ["tasmax[0:1:55114]", "tasmax[0:55114]",],
 )
 def test_build_url(thredds_base, filepath, variable, lat, lon):
     url = build_url(thredds_base, filepath, variable, lat, lon)
@@ -38,9 +35,12 @@ def test_build_url(thredds_base, filepath, variable, lat, lon):
     ],
 )
 def test_request_opendap(url):
-    tmp_files = request_opendap(url)
+    logger = setup_logging("INFO")
+    tmp_files = request_opendap(url, logger)
+
     constraint_format = re.compile(r":(\d*)\]")
     time, lat, lon = constraint_format.findall(url)
+
     for tmp in tmp_files:
         with open_dataset(tmp.name) as d:
             assert d.dims["lat"] == int(lat) + 1
