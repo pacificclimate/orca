@@ -12,7 +12,6 @@ def process_request(
     logger.info(f"Getting the filepath")
     sesh = start_session(connection_string)
     filepath = find_filepath(sesh, unique_id)
-
     logger.debug(f"filepath: {filepath}")
 
     logger.info(f"Building initial url")

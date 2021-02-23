@@ -9,12 +9,12 @@ from modelmeta import DataFile, create_test_database
 def make_data_file(i, run=None, timeset=None):
     return DataFile(
         id=i,
-        filename='data_file_{}'.format(i),
-        first_1mib_md5sum='first_1mib_md5sum',
-        unique_id='unique_id_{}'.format(i),
-        x_dim_name='lon',
-        y_dim_name='lat',
-        t_dim_name='time',
+        filename=f"data_file_{i}",
+        first_1mib_md5sum="first_1mib_md5sum",
+        unique_id=f"unique_id_{i}",
+        x_dim_name="lon",
+        y_dim_name="lat",
+        t_dim_name="time",
         index_time=datetime.datetime.now(),
         run=run,
         timeset=timeset,
