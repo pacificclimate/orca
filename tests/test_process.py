@@ -5,14 +5,9 @@ from tempfile import NamedTemporaryFile
 from orca import process, request_opendap, finder, split
 
 
-def expected_outputs(thredds_base, connection_string, unique_id, variable, lat, lon):
+def expected_url(thredds_base, connection_string, unique_id, variable, lat, lon):
     filepath = finder.find_filepath(connection_string, unique_id)
-    url = request_opendap.build_url(thredds_base, filepath, variable, lat, lon)
-
-    with open_dataset(url) as data:
-        split_urls = split.split_url(url, data.nbytes)
-
-    return url, split_urls
+    return request_opendap.build_url(thredds_base, filepath, variable, lat, lon)
 
 
 @pytest.mark.online
@@ -36,28 +31,22 @@ def expected_outputs(thredds_base, connection_string, unique_id, variable, lat, 
     ],
 )
 def test_process(thredds_base, connection_string, unique_id, variable, lat, lon):
-    data_files = process.process_request(
-        connection_string,
-        unique_id,
-        thredds_base,
-        variable,
-        lat,
-        lon,
-    )
+    with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
+        output_path = process.process_request(
+            connection_string,
+            unique_id,
+            thredds_base,
+            variable,
+            lat,
+            lon,
+            outfile.name
+        )
 
-    url, split_urls = expected_outputs(
-        thredds_base, connection_string, unique_id, variable, lat, lon
-    )
+        url =  expected_url(
+            thredds_base, connection_string, unique_id, variable, lat, lon
+        )
 
-    time_total = 0
-    for i in range(len(data_files)):
-        with open_dataset(split_urls[i]) as expected, open_dataset(
-            data_files[i].name
-        ) as output:
-            assert expected.dims["time"] == output.dims["time"]
-            time_total += output.dims["time"]
-
-        data_files[i].close()
-
-    with open_dataset(url) as data:
-        assert time_total == data.dims["time"]
+        with open_dataset(url) as expected, open_dataset(
+            output_path
+        ) as data:
+            assert expected.dims == data.dims

@@ -9,7 +9,7 @@ def reconstruct_dataset_test(data_files, url):
     with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
         data_path = reconstruct_dataset(data_files, outfile.name)
         with open_dataset(data_path) as data, open_dataset(url) as expected_data:
-            assert data == expected_data
+            assert data.equals(expected_data)
 
 
 @pytest.mark.online
