@@ -1,7 +1,8 @@
 import re
+from math import ceil
 
 
-def split_url(url, size):
+def split_url(url, size, req_limit):
     start_end_format = re.compile(r"(([a-z]+)\[(\d*)(:\d*){0,1}:(\d*)\])")
     var_time, var, start, stride, end = start_end_format.findall(url)[0]
     start = int(start)
@@ -9,8 +10,7 @@ def split_url(url, size):
 
     # Server error reports dataset size = dataset.nbytes/2
     b = size / 2
-    # Request limit is 5e+8 bytes
-    chunks = -(-b // 5e8)  # take ceiling
+    chunks = ceil(b / req_limit)
     total = end - start
     step = int(total // chunks)
 

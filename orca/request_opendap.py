@@ -5,12 +5,12 @@ from tempfile import NamedTemporaryFile
 from .split import split_url
 
 
-def request_opendap(url):
+def request_opendap(url, req_limit=5e8):
     data = open_dataset(url)
     size = data.nbytes
 
-    if size / 2 > 5e8:
-        urls = split_url(url, size)
+    if size / 2 > req_limit:
+        urls = split_url(url, size, req_limit)
     else:
         urls = [url]
 
