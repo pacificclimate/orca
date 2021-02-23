@@ -30,7 +30,7 @@ def test_reconstruct_dataset_online(data_files, source_url):
 
 
 @pytest.mark.parametrize(
-    ("data_files", "full_file"),
+    ("data_paths", "full_file"),
     [
         (
             [
@@ -41,5 +41,5 @@ def test_reconstruct_dataset_online(data_files, source_url):
         )
     ],
 )
-def test_reconstruct_dataset_local(data_files, full_file):
-    reconstruct_dataset_test(data_files, full_file)
+def test_reconstruct_dataset_local(data_paths, full_file):
+    reconstruct_dataset_test(data_paths, full_file)
