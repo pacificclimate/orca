@@ -17,4 +17,5 @@ def find_filepath(sesh, unique_id):
 
 
 def start_session(connection_string):
+    """Create session using connection string"""
     return sessionmaker(create_engine(connection_string))()
