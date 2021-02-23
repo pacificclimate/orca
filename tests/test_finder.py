@@ -16,17 +16,6 @@ def test_find_filepath(test_session, unique_id, expected):
 
 
 @pytest.mark.parametrize(
-    "bad_unique_id",
-    [
-        (0),  # search expects a string so an int will break it
-    ],
-)
-def test_find_filepath_bad_search(test_session, bad_unique_id):
-    with pytest.raises(Exception):
-        filename = find_filepath(test_session, bad_unique_id)
-
-
-@pytest.mark.parametrize(
     "no_match_id",
     [
         ("no_match_id"),

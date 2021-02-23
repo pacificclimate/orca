@@ -5,10 +5,7 @@ from modelmeta import DataFile
 
 def find_filepath(sesh, unique_id):
     """Given a unique_id, search pcic_meta for matching filepath"""
-    try:
-        datafile = sesh.query(DataFile).filter(DataFile.unique_id == unique_id)
-    except Exception as e:
-        raise e
+    datafile = sesh.query(DataFile).filter(DataFile.unique_id == unique_id)
 
     if datafile.count() == 0:
         raise Exception(f"No match found with unique_id: {unique_id}")
