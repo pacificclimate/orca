@@ -5,14 +5,12 @@ from tempfile import NamedTemporaryFile
 from orca import process, request_opendap, finder, split
 
 
-def expected_outputs(
-    thredds_base, connection_string, unique_id, variable, lat, lon, req_limit=5e8
-):
+def expected_outputs(thredds_base, connection_string, unique_id, variable, lat, lon):
     filepath = finder.find_filepath(connection_string, unique_id)
     url = request_opendap.build_url(thredds_base, filepath, variable, lat, lon)
 
     with open_dataset(url) as data:
-        split_urls = split.split_url(url, data.nbytes, req_limit)
+        split_urls = split.split_url(url, data.nbytes)
 
     return url, split_urls
 

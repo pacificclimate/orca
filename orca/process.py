@@ -11,12 +11,12 @@ def process_request(
 
     logger.info(f"Getting the filepath")
     filepath = find_filepath(connection_string, unique_id)
-    logger.info(f"filepath: {filepath}")
+    logger.debug(f"filepath: {filepath}")
 
     logger.info(f"Building initial url")
     url = build_url(thredds_base, filepath, variable, lat, lon)
-    logger.info(f"url: {url}")
+    logger.debug(f"url: {url}")
 
-    temp_files = request_opendap(url, logger)
+    temp_files = request_opendap(url)
 
     return temp_files

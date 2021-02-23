@@ -39,8 +39,7 @@ def test_build_url(thredds_base, filepath, variable, lat, lon):
     ],
 )
 def test_request_opendap(url):
-    logger = setup_logging("INFO")
-    tmp_files = request_opendap(url, logger)
+    tmp_files = request_opendap(url)
 
     constraint_format = re.compile(r":(\d*)\]")
     time, lat, lon = constraint_format.findall(url)

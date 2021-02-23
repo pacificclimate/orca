@@ -1,5 +1,6 @@
 import pytest
 import re
+from math import ceil
 from orca.split import split_url
 
 
@@ -21,9 +22,9 @@ from orca.split import split_url
     ],
 )
 def test_split_url(url, size):
-    urls = split_url(url, size, 5e8)
+    urls = split_url(url, size)
 
-    expected_chunks = -(-(size / 2) // 5e8)
+    expected_chunks = ceil((size / 2) / 5e8)
     start_end_format = re.compile(r"[a-z]+\[(\d*)(:\d*){0,1}:(\d*)\]")
     start, stride, end = start_end_format.findall(url)[0]
 
