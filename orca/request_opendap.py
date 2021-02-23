@@ -26,7 +26,4 @@ def request_opendap(url, logger, req_limit=5e8):
 
 
 def build_url(thredds_base, filepath, variable, lat, lon):
-    variable_form = re.compile(r"([a-z]*)(\[\d*(:\d*){1,2}\])")
-    var_name, var_time = variable_form.findall(variable)[0][:2]
-
-    return f"{thredds_base}{filepath}?{var_name}{var_time}{lat}{lon}"
+    return f"{thredds_base}{filepath}?{variable}{lat}{lon}"

@@ -31,11 +31,20 @@ def expected_outputs(
     ],
 )
 @pytest.mark.parametrize(
-    ("variable"), ["tasmax[0:1:0]", "tasmax[0:1:15000]",],
+    ("variable"),
+    [
+        "tasmax[0:1:0]",
+        "tasmax[0:1:15000]",
+    ],
 )
 def test_process(thredds_base, connection_string, unique_id, variable, lat, lon):
     data_files = process.process_request(
-        connection_string, unique_id, thredds_base, variable, lat, lon,
+        connection_string,
+        unique_id,
+        thredds_base,
+        variable,
+        lat,
+        lon,
     )
 
     url, split_urls = expected_outputs(

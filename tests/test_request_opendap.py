@@ -18,7 +18,11 @@ from orca.request_opendap import build_url, request_opendap
     ],
 )
 @pytest.mark.parametrize(
-    ("variable"), ["tasmax[0:1:55114]", "tasmax[0:55114]",],
+    ("variable"),
+    [
+        "tasmax[0:1:55114]",
+        "tasmax[0:55114]",
+    ],
 )
 def test_build_url(thredds_base, filepath, variable, lat, lon):
     url = build_url(thredds_base, filepath, variable, lat, lon)
