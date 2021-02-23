@@ -1,4 +1,4 @@
-from .finder import find_filepath
+from .finder import find_filepath, start_session
 from .request_opendap import build_url, request_opendap
 from .utils import setup_logging
 
@@ -10,7 +10,8 @@ def process_request(
     logger = setup_logging(log_level)
 
     logger.info(f"Getting the filepath")
-    filepath = find_filepath(connection_string, unique_id)
+    sesh = start_session(connection_string)
+    filepath = find_filepath(sesh, unique_id)
     logger.debug(f"filepath: {filepath}")
 
     logger.info(f"Building initial url")

@@ -6,7 +6,8 @@ from orca import process, request_opendap, finder, split
 
 
 def expected_outputs(thredds_base, connection_string, unique_id, variable, lat, lon):
-    filepath = finder.find_filepath(connection_string, unique_id)
+    sesh = finder.start_session(connection_string)
+    filepath = finder.find_filepath(sesh, unique_id)
     url = request_opendap.build_url(thredds_base, filepath, variable, lat, lon)
 
     with open_dataset(url) as data:
