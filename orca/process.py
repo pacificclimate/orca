@@ -1,4 +1,4 @@
-from .finder import find_filepath
+from .finder import find_filepath, start_session
 from .request_opendap import build_url, request_opendap
 from .utils import setup_logging
 
