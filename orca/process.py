@@ -1,5 +1,6 @@
 from .finder import find_filepath
 from .request_opendap import build_url, request_opendap
+from .reconstruct import reconstruct_dataset
 from .utils import setup_logging
 
 
@@ -17,6 +18,11 @@ def process_request(
     url = build_url(thredds_base, filepath, variable, lat, lon)
     logger.debug(f"url: {url}")
 
+    logger.info(f"Downloading data")
     temp_files = request_opendap(url)
+    logger.debug(f"temp_files: {temp_files}")
+
+    logger.info(f"Reconstructing split data")
+    data = reconstruct_dataset(temp_files)
 
     return temp_files
