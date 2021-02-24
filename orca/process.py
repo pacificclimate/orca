@@ -5,7 +5,14 @@ from .utils import setup_logging
 
 
 def process_request(
-    connection_string, unique_id, thredds_base, variable, lat, lon, outfile, log_level="INFO"
+    connection_string,
+    unique_id,
+    thredds_base,
+    variable,
+    lat,
+    lon,
+    outfile,
+    log_level="INFO",
 ):
     """Uses orca modules to process output"""
     logger = setup_logging(log_level)
