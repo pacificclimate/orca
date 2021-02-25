@@ -6,6 +6,7 @@ from tempfile import NamedTemporaryFile
 from orca.requester import file_from_opendap, build_url, split_url
 
 
+@pytest.mark.online
 @pytest.mark.parametrize(
     "url",
     [
@@ -20,6 +21,8 @@ from orca.requester import file_from_opendap, build_url, split_url
 def test_file_from_opendap(url):
     with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
         file_from_opendap(url, outfile)
+        with open_dataset(url) as expected, open_dataset(outfile) as data:
+            assert expected.dims == data.dims
 
 
 @pytest.mark.parametrize(
