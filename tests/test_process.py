@@ -33,7 +33,7 @@ def expected_url(thredds_base, connection_string, unique_id, variable, lat, lon)
 )
 def test_process(thredds_base, connection_string, unique_id, variable, lat, lon):
     with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
-        output_path = process.process_request(
+        output = process.process_request(
             connection_string, unique_id, thredds_base, variable, lat, lon, outfile.name
         )
 
@@ -41,5 +41,7 @@ def test_process(thredds_base, connection_string, unique_id, variable, lat, lon)
             thredds_base, connection_string, unique_id, variable, lat, lon
         )
 
-        with open_dataset(url) as expected, open_dataset(output_path) as data:
+        with open_dataset(url) as expected, open_dataset(output.name) as data:
             assert expected.dims == data.dims
+
+        output.close()

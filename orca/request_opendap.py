@@ -1,6 +1,6 @@
 import re
 import logging
-from xarray import open_dataset, load_dataset
+from xarray import open_dataset, open_mfdataset
 from tempfile import NamedTemporaryFile
 
 from .split import split_url
@@ -15,16 +15,11 @@ def request_opendap(url):
     logger.debug(f"Splitting url: {url}")
     urls = split_url(url, size)
 
-    output = []
-    for path in urls:
-        tmp = NamedTemporaryFile(suffix=".nc", dir="/tmp")
-        logger.info(
-            f"Downloading dataset {urls.index(path)+1} of {len(urls)} to {tmp.name}"
-        )
-        open_dataset(path).to_netcdf(tmp.name)
-        output.append(tmp)
+    logger.debug(f"Downloading and merging {len(urls)} split files")
+    tmp = NamedTemporaryFile(suffix=".nc", dir="/tmp")
+    open_mfdataset(urls, combine="nested", concat_dim="time").to_netcdf(tmp.name)
 
-    return output
+    return tmp
 
 
 def build_url(thredds_base, filepath, variable, lat, lon):

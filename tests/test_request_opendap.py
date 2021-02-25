@@ -39,13 +39,11 @@ def test_build_url(thredds_base, filepath, variable, lat, lon):
     ],
 )
 def test_request_opendap(url):
-    tmp_files = request_opendap(url)
+    tmp = request_opendap(url)
 
     constraint_format = re.compile(r":(\d*)\]")
     time, lat, lon = constraint_format.findall(url)
+    with open_dataset(tmp.name) as d_output, open_dataset(url) as d_expected:
+        assert d_output.dims == d_expected.dims
 
-    for tmp in tmp_files:
-        with open_dataset(tmp.name) as d:
-            assert d.dims["lat"] == int(lat) + 1
-            assert d.dims["lon"] == int(lon) + 1
-        tmp.close()
+    tmp.close()

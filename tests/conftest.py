@@ -2,6 +2,7 @@ import pytest
 import testing.postgresql
 import datetime
 from pathlib import Path
+from pkg_resources import resource_filename
 from xarray import open_dataset
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -60,21 +61,3 @@ def test_session(meta_session):
     meta_session.commit()
 
     yield meta_session
-
-
-@pytest.fixture
-def temp_files():
-    file_paths = [
-        f"{str(Path(__file__).parents[0])}/data/tasmin_sClimSD_anusplin_historical_19710101-20001231_time_0.nc",
-        f"{str(Path(__file__).parents[0])}/data/tasmin_sClimSD_anusplin_historical_19710101-20001231_time_1.nc",
-    ]
-
-    temp_files = []
-    for path in file_paths:
-        tmp = NamedTemporaryFile(suffix=".nc", dir="/tmp")
-        with open_dataset(path) as d:
-            d.to_netcdf(tmp.name)
-
-        temp_files.append(tmp)
-
-    yield temp_files
