@@ -3,6 +3,7 @@ import testing.postgresql
 import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from tempfile import NamedTemporaryFile
 from modelmeta import DataFile, create_test_database
 
 

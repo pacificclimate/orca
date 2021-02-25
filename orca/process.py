@@ -4,20 +4,29 @@ from .utils import setup_logging
 
 
 def process_request(
-    connection_string, unique_id, thredds_base, variable, lat, lon, log_level="INFO"
+    connection_string,
+    unique_id,
+    thredds_base,
+    variable,
+    lat,
+    lon,
+    outfile,
+    log_level="INFO",
 ):
     """Uses orca modules to process output"""
     logger = setup_logging(log_level)
 
-    logger.info(f"Getting the filepath")
+    logger.info("Getting the filepath")
     sesh = start_session(connection_string)
     filepath = find_filepath(sesh, unique_id)
     logger.debug(f"filepath: {filepath}")
 
-    logger.info(f"Building initial url")
+    logger.info("Building initial url")
     url = build_url(thredds_base, filepath, variable, lat, lon)
     logger.debug(f"url: {url}")
 
-    temp_files = request_opendap(url)
+    logger.info("Downloading data")
+    out_file = request_opendap(url, outfile)
 
-    return temp_files
+    logger.info("Download complete")
+    return out_file
