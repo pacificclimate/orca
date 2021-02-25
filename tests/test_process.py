@@ -41,7 +41,7 @@ def test_process(thredds_base, connection_string, unique_id, variable, lat, lon)
             thredds_base, connection_string, unique_id, variable, lat, lon
         )
 
-        with open_dataset(url) as expected, open_dataset(output.name) as data:
+        with open_dataset(url) as expected, open_dataset(output) as data:
             assert expected.dims == data.dims
 
-        output.close()
+        outfile.close()

@@ -26,8 +26,7 @@ def process_request(
     logger.debug(f"url: {url}")
 
     logger.info("Downloading data")
-    temp_file = request_opendap(url)
-    logger.debug(f"temp_file: {temp_file}")
+    out_file = request_opendap(url, outfile)
 
     logger.info("Download complete")
-    return temp_file
+    return out_file
