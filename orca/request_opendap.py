@@ -1,6 +1,5 @@
-import re
 import logging
-from xarray import open_dataset, open_mfdataset
+from xarray import open_mfdataset, open_dataset
 from tempfile import NamedTemporaryFile
 
 from .split import split_url

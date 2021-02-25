@@ -1,9 +1,6 @@
 import pytest
 import testing.postgresql
 import datetime
-from pathlib import Path
-from pkg_resources import resource_filename
-from xarray import open_dataset
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from tempfile import NamedTemporaryFile

@@ -2,7 +2,7 @@ import pytest
 from xarray import open_dataset
 from tempfile import NamedTemporaryFile
 
-from orca import process, request_opendap, finder, split
+from orca import process, request_opendap, finder
 
 
 def expected_url(thredds_base, connection_string, unique_id, variable, lat, lon):
