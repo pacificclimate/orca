@@ -2,6 +2,7 @@ import pytest
 import re
 from math import ceil
 from tempfile import NamedTemporaryFile
+from xarray import open_dataset
 
 from orca.requester import file_from_opendap, build_url, split_url
 
@@ -19,9 +20,9 @@ from orca.requester import file_from_opendap, build_url, split_url
     ],
 )
 def test_file_from_opendap(url):
-    with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
-        file_from_opendap(url, outfile)
-        with open_dataset(url) as expected, open_dataset(outfile) as data:
+    with NamedTemporaryFile(suffix=".nc", dir="/tmp") as temp:
+        file_from_opendap(url, temp.name)
+        with open_dataset(url) as expected, open_dataset(temp.name) as data:
             assert expected.dims == data.dims
 
 
