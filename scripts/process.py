@@ -1,5 +1,5 @@
 import click
-from orca.process import process_request
+from orca.main import orc
 
 
 @click.command()
@@ -11,30 +11,38 @@ from orca.process import process_request
 )
 @click.option("-u", "--unique-id", help="Unique_id to search for in DB")
 @click.option(
-    "-th",
-    "--thredds-base",
-    help="Base path for all OPeNDAP links",
-    default="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
-)
-@click.option(
     "-v", "--variable", help="Varible + time range string (ex. tasmax[0:55114])"
 )
 @click.option("-t", "--lat", help="Latitude slab as index (ex. [89:89])")
 @click.option("-n", "--lon", help="Longitude slab as index (ex. [211:211])")
-@click.option("-f", "--out-file", help="Ouput file path")
-@click.option("-log", "--log-level", help="Ouput file path", default="INFO")
+@click.option(
+    "-b",
+    "--thredds-base",
+    help="Base path for all OPeNDAP links",
+    default="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+)
+@click.option("-o", "--outfile", help="Output file path", default="outfile.nc")
+@click.option("-l", "--log-level", help="Ouput file path", default="INFO")
 def process(
-    connection_string, unique_id, thredds_base, variable, lat, lon, out_file, log_level
+    connection_string, unique_id, variable, lat, lon, thredds_base, outfile, log_level
 ):
     """CLI for orca"""
-    process_request(
+    print(connection_string)
+    print(unique_id)
+    print(variable)
+    print(lat)
+    print(lon)
+    print(thredds_base)
+    print(outfile)
+    print(log_level)
+    orc(
         connection_string,
         unique_id,
-        thredds_base,
         variable,
         lat,
         lon,
-        out_file,
+        thredds_base,
+        outfile,
         log_level,
     )
 
