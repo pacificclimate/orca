@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Speed testing
+program.prof
+
+# Ignore default output file
+outfile.nc

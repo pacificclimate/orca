@@ -1,5 +1,5 @@
 import pytest
-from orca.finder import find_filepath
+from orca.db_handler import find_filepath
 
 
 @pytest.mark.parametrize(

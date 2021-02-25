@@ -2,13 +2,14 @@ import pytest
 from xarray import open_dataset
 from tempfile import NamedTemporaryFile
 
-from orca import process, request_opendap, finder
+from orca import main, requester, db_handler
 
 
 def expected_url(thredds_base, connection_string, unique_id, variable, lat, lon):
-    sesh = finder.start_session(connection_string)
-    filepath = finder.find_filepath(sesh, unique_id)
-    return request_opendap.build_url(thredds_base, filepath, variable, lat, lon)
+    """Helper for asserting url construction"""
+    sesh = db_handler.start_session(connection_string)
+    filepath = db_handler.find_filepath(sesh, unique_id)
+    return requester.build_url(thredds_base, filepath, variable, lat, lon)
 
 
 @pytest.mark.online
@@ -31,10 +32,10 @@ def expected_url(thredds_base, connection_string, unique_id, variable, lat, lon)
         "tasmax[0:1:15000]",
     ],
 )
-def test_process(thredds_base, connection_string, unique_id, variable, lat, lon):
+def test_main(thredds_base, connection_string, unique_id, variable, lat, lon):
     with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
-        output = process.process_request(
-            connection_string, unique_id, thredds_base, variable, lat, lon, outfile.name
+        output = main.orc(
+            connection_string, unique_id, variable, lat, lon, thredds_base, outfile.name
         )
 
         url = expected_url(
