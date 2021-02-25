@@ -27,14 +27,6 @@ def process(
     connection_string, unique_id, variable, lat, lon, thredds_base, outfile, log_level
 ):
     """CLI for orca"""
-    print(connection_string)
-    print(unique_id)
-    print(variable)
-    print(lat)
-    print(lon)
-    print(thredds_base)
-    print(outfile)
-    print(log_level)
     orc(
         connection_string,
         unique_id,
