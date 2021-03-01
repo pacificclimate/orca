@@ -69,3 +69,8 @@ def get_dds(root, target, variable=""):
     """Construct the url required to get DDS response"""
     suffix = f"?{variable}" if variable else ""
     return requests.get(f"{root}{target}.dds{suffix}").text
+
+
+def get_das(root, target):
+    """Construct the url required to get DAS response"""
+    return requests.get(f"{root}{target}.das").text
