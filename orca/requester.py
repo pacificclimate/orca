@@ -2,6 +2,7 @@ import logging
 from xarray import open_mfdataset, open_dataset
 import re
 from math import ceil
+import requests
 
 
 logger = logging.getLogger("scripts")
@@ -62,3 +63,9 @@ def split_url(url, size, threshold=5e8):
     else:
         logger.debug(f"Request under threshold: {bytes}")
         return [url]
+
+
+def get_dds(root, target, variable=""):
+    """Construct the url required to get DDS response"""
+    suffix = f"?{variable}" if variable else ""
+    return requests.get(f"{root}{target}.dds{suffix}").text
