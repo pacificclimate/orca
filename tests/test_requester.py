@@ -4,7 +4,8 @@ from math import ceil
 from tempfile import NamedTemporaryFile
 from xarray import open_dataset
 
-from orca.requester import file_from_opendap, build_url, split_url
+from orca.requester import file_from_opendap, build_url, split_url, get_das, get_dds
+from orca.db_handler import find_filepath, start_session
 
 
 @pytest.mark.online
@@ -77,3 +78,53 @@ def test_split_url(url, size):
     assert len(urls) == expected_chunks
     assert start in urls[0]
     assert end in urls[-1]
+
+
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("connection_string", "root", "unique_id"),
+    [
+        (
+            "postgresql://httpd_meta@db3.pcic.uvic.ca/pcic_meta",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+            "tasmax_day_BCCAQv2_bcc-csm1-1-m_historical-rcp26_r1i1p1_19500101-21001231_Canada",
+        )
+    ],
+)
+def test_get_das(connection_string, root, unique_id):
+    sesh = start_session(connection_string)
+    filepath = find_filepath(sesh, unique_id)
+    text = get_das(root, filepath)
+
+    assert "Attributes" in text
+    assert "code = 4" not in text
+
+
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("connection_string", "root", "unique_id"),
+    [
+        (
+            "postgresql://httpd_meta@db3.pcic.uvic.ca/pcic_meta",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+            "tasmax_day_BCCAQv2_bcc-csm1-1-m_historical-rcp26_r1i1p1_19500101-21001231_Canada",
+        )
+    ],
+)
+@pytest.mark.parametrize(
+    ("variable"),
+    [
+        "time",
+        "lat",
+        "lon",
+        "",
+    ],
+)
+def test_get_dds(connection_string, root, unique_id, variable):
+    sesh = start_session(connection_string)
+    filepath = find_filepath(sesh, unique_id)
+    text = get_dds(root, filepath, variable)
+
+    assert "Dataset" in text
+    assert variable in text
+    assert "code = 4" not in text
