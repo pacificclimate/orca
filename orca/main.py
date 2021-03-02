@@ -11,7 +11,6 @@ def orc(
     outfile="outfile.nc",
     log_level="INFO",
 ):
-    # def orc(unique_id, url):
     """OPeNDAP Request Complier
 
     Builds an OPeNDAP request that can be split into a series of requests and
