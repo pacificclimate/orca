@@ -62,3 +62,11 @@ def split_url(url, size, threshold=5e8):
     else:
         logger.debug(f"Request under threshold: {bytes}")
         return [url]
+
+
+def decompose_url(url):
+    """Takes the url from the data portal and breaks it down into usable pieces"""
+    _, pieces = url.split("?")
+    pattern = "([a-z]+\[\d+:\d+\])(\[\d+:\d+\])(\[\d+:\d+\])"
+    (match,) = re.findall(pattern, pieces)
+    return match
