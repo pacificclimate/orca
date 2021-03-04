@@ -1,11 +1,11 @@
 from .db_handler import find_filepath, start_session
-from .requester import build_opendap_url, file_from_opendap, decompose_target
+from .requester import build_opendap_url, file_from_opendap
 from .utils import setup_logging
 
 
 def orc(
-    target,
     unique_id,
+    targets,
     connection_string="postgresql://httpd_meta@db3.pcic.uvic.ca/pcic_meta",
     thredds_base="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     outdir="/tmp/",
@@ -19,8 +19,6 @@ def orc(
     """
     logger = setup_logging(log_level)
     logger.info("Processing data file request")
-
-    variable, lat, lon = decompose_target(target)
 
     logger.debug("Starting db session")
     sesh = start_session(connection_string)
