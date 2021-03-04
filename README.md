@@ -17,5 +17,5 @@ flask run
 ```
 Once the instance has been spun up you can request a file from it using a url like this:
 ```
-http://127.0.0.1:5000/orca/tasmax[0:150][0:91][0:206]/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada
+http://127.0.0.1:5000/orca/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
 ```
