@@ -16,3 +16,7 @@ def orca(unique_id, targets):
         as_attachment=True,
         attachment_filename=get_filename_from_path(outpath),
     )
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')

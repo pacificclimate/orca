@@ -17,5 +17,4 @@ RUN pip install -U pip && \
 
 COPY . /app
 
-ENTRYPOINT ["python"]
-CMD ["orca/app.py"]
+CMD ["python", "orca/app.py"]
