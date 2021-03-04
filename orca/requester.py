@@ -34,9 +34,9 @@ def to_file(dataset, outdir):
     return outpath
 
 
-def build_opendap_url(thredds_base, filepath, variable, lat, lon):
+def build_opendap_url(thredds_base, filepath, targets):
     """Construct url for OPeNDAP"""
-    return f"{thredds_base}{filepath}?{variable}{lat}{lon}"
+    return f"{thredds_base}{filepath}?{targets}"
 
 
 def split_url(url, size, threshold=5e8):
@@ -78,10 +78,3 @@ def split_url(url, size, threshold=5e8):
     else:
         logger.debug(f"Request under threshold: {bytes * 10**-6}/500mb")
         return [url]
-
-
-def decompose_target(target):
-    """Takes the variable target string given by data portal and breaks it into pieces"""
-    pattern = "([a-z]+\[\d+:\d+\])(\[\d+:\d+\])(\[\d+:\d+\])"
-    (match,) = re.findall(pattern, target)
-    return match
