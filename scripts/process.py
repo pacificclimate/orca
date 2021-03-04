@@ -3,8 +3,8 @@ from orca.main import orc
 
 
 @click.command()
-@click.option("--url", help="Data portal URL")
-@click.option("--unique-id", help="Unique_id to search for in DB")
+@click.option("-u", "--unique-id", help="Unique_id to search for in DB")
+@click.option("-t", "--targets", help="These are the data file targets in the form `variable[time_start:time_end][lat_start:lat_end][lon_start:lon_end]` (ex. tasmax[0:100][91:91][206:206])")
 @click.option(
     "-x",
     "--connection-string",
@@ -17,11 +17,11 @@ from orca.main import orc
     help="Base path for all OPeNDAP links",
     default="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
 )
-@click.option("-o", "--outfile", help="Output file path", default="outfile.nc")
-@click.option("-l", "--log-level", help="Ouput file path", default="INFO")
-def process(url, unique_id, connection_string, thredds_base, outfile, log_level):
+@click.option("-o", "--outdir", help="Desired dir to store generated output", default="/tmp/")
+@click.option("-l", "--log-level", help="Logging level", default="INFO", type=click.Choice(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], case_sensitive=False))
+def process(unique_id, targets, connection_string, thredds_base, outdir, log_level):
     """CLI for orca"""
-    orc(url, unique_id, connection_string, thredds_base, outfile, log_level)
+    orc(unique_id, targets, connection_string, thredds_base, outdir, log_level)
 
 
 if __name__ == "__main__":
