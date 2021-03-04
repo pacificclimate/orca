@@ -1,6 +1,6 @@
 from flask import Flask, send_file
-from .main import orc
-from .utils import get_filename_from_path
+from orca.main import orc
+from orca.utils import get_filename_from_path
 
 
 app = Flask(__name__)

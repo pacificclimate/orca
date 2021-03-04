@@ -1,6 +1,6 @@
-from .db_handler import find_filepath, start_session
-from .requester import build_opendap_url, file_from_opendap
-from .utils import setup_logging
+from orca.db_handler import find_filepath, start_session
+from orca.requester import build_opendap_url, file_from_opendap
+from orca.utils import setup_logging
 
 
 def orc(
