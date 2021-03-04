@@ -25,7 +25,7 @@ def orc(
     filepath = find_filepath(sesh, unique_id)
     logger.debug(f"Got filepath: {filepath}")
 
-    opendap_url = build_opendap_url(thredds_base, filepath, variable, lat, lon)
+    opendap_url = build_opendap_url(thredds_base, filepath, targets)
     logger.debug(f"Initial OPeNDAP URL: {opendap_url}")
 
     logger.info("Downloading data from OPeNDAP")
