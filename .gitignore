@@ -133,3 +133,5 @@ program.prof
 
 # Ignore default output file
 outfile.nc
+
+/q

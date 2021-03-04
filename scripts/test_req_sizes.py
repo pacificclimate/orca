@@ -60,7 +60,7 @@ def test_req_sizes(connection_string, unique_id, thredds_base, log_level):
                 end = time.time()
             elapsed = end - start
 
-            writer.writerow([variable])
+            writer.writerow([variable, num_mb, elapsed])
 
 
 if __name__ == "__main__":
