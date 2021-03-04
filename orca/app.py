@@ -6,14 +6,13 @@ from .utils import get_filename_from_path
 app = Flask(__name__)
 
 
-@app.route("/orca/<string:url>/<string:unique_id>", methods=["GET", "POST"])
-def orca(url, unique_id):
-    outpath = orc(url, unique_id)
-    name = get_filename_from_path(outpath)
+@app.route("/orca/<string:unique_id>/<string:targets>", methods=["GET", "POST"])
+def orca(unique_id, targets):
+    outpath = orc(unique_id, targets)
 
     return send_file(
         outpath,
         mimetype="application/x-netcdf",
         as_attachment=True,
-        attachment_filename=name,
+        attachment_filename=get_filename_from_path(outpath),
     )
