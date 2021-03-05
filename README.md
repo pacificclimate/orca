@@ -10,6 +10,7 @@ source /tmp/orca/venv/bin/activate
 ```
 
 ## Run App
+### Locally
 Before starting the app, ensure that you have set all the required environment variables:
 ```
 export FLASK_APP=orca/app.py
@@ -23,4 +24,14 @@ flask run
 Once the instance has been spun up you can request a file from it using a URL in this form:
 ```
 http://127.0.0.1:5000/orca/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
+```
+
+### Docker
+To run the `orca` docker container ensure that you have set all variables in the `deployment.env` then run:
+```
+docker-compose up -d
+```
+To stop the container:
+```
+docker-compose down
 ```
