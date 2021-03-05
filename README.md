@@ -6,7 +6,7 @@ The purpose of orca is to pull apart large `OPeNDAP` requests to `THREDDS` into 
 We use `make` to handle the installation process. Copy and paste this section into your terminal:
 ```
 make
-source /tmp/orca/venv/bin/activate
+source /tmp/orca-venv/bin/activate
 ```
 
 ## Run App
