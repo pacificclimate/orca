@@ -5,4 +5,5 @@ services:
     container_name: orca
     ports:
       - "30333:5000"
-    restart: always
+    env_file:
+      - deployment.env
