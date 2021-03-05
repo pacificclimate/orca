@@ -1,4 +1,4 @@
-# orca (OPeNDAP Request Compiler Application)
+# OPeNDAP Request Compiler Application (`orca`)
 
 The purpose of orca is to pull apart large `OPeNDAP` requests to `THREDDS` into bite-sized chunks. These chunks are then reassembled before returning to the user.
 
@@ -17,11 +17,12 @@ export FLASK_APP=orca/app.py
 export DSN=postgresql://<USER>:<PASSWORD>@db3.pcic.uvic.ca/pcic_meta
 ```
 
-Once that has been complete `Flask` can be used to spin up an instance of `orca` on your local machine:
+Once those have all been set, `Flask` can be used to spin up an instance of `orca` on your local machine:
 ```
 flask run
 ```
-Once the instance has been spun up you can request a file from it using a URL in this form:
+
+When the instance is running you can request a url in your browser in this form:
 ```
 http://127.0.0.1:5000/orca/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
 ```
@@ -35,3 +36,10 @@ To stop the container:
 ```
 docker-compose down
 ```
+
+Again you will be able to acesss the service through a url:
+```
+http://docker-dev03.pcic.uvic.ca:30333/orca/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
+```
+
+*NOTE: The variables in `deployment.env` are private and as such must not be committed to the repo*
