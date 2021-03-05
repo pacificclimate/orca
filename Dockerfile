@@ -1,11 +1,13 @@
 FROM python:3.8-slim
 
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
-ENV LDFLAGS="-L/usr/local/opt/openssl/lib"
-ENV CPPFLAGS="-I/usr/local/opt/openssl/include"
 
 RUN apt-get update && \
-    apt-get install -y gcc libpq-dev libhdf5-serial-dev netcdf-bin libnetcdf-dev
+    apt-get install -y gcc \
+      libpq-dev \
+      libhdf5-serial-dev \
+      netcdf-bin \
+      libnetcdf-dev
 
 COPY . /app
 
@@ -17,4 +19,5 @@ RUN pip install -U pip && \
 
 COPY . /app
 
+EXPOSE 5000
 CMD ["python", "orca/app.py"]
