@@ -9,22 +9,24 @@ from datetime import datetime
 logger = logging.getLogger("scripts")
 
 
-def file_from_opendap(url, outdir):
+def file_from_opendap(url, outdir, outfile):
     """Write to file from OPeNDAP link"""
     checkset = open_dataset(url)
     urls = split_url(url, checkset.nbytes)
 
     logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
     dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
-    outfile = to_file(dataset, outdir)
+    outpath = to_file(dataset, outdir, outfile)
 
-    return outfile
+    return outpath
 
 
-def to_file(dataset, outdir):
+def to_file(dataset, outdir, outfile=""):
     """Write netcdf to generated filename"""
-    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    outfile = f"orca-output-{now}"
+    if not outfile:
+        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        outfile = f"orca-output-{now}"
+
     outpath = outdir + outfile
 
     logger.debug("Begin file write")

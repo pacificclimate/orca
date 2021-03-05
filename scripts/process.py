@@ -18,6 +18,7 @@ from orca.main import orc
 @click.option(
     "-o", "--outdir", help="Desired dir to store generated output", default="/tmp/"
 )
+@click.option("-f", "--outfile", help="Custom output filename", default="")
 @click.option(
     "-l",
     "--log-level",
@@ -27,9 +28,9 @@ from orca.main import orc
         ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], case_sensitive=False
     ),
 )
-def process(unique_id, targets, connection_string, thredds_base, outdir, log_level):
+def process(unique_id, targets, thredds_base, outdir, outfile, log_level):
     """CLI for orca"""
-    orc(unique_id, targets, thredds_base, outdir, log_level)
+    orc(unique_id, targets, thredds_base, outdir, outfile, log_level)
 
 
 if __name__ == "__main__":

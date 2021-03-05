@@ -8,6 +8,7 @@ def orc(
     targets,
     thredds_base="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     outdir="/tmp/",
+    outfile="",
     log_level="INFO",
 ):
     """OPeNDAP Request Complier
@@ -28,7 +29,7 @@ def orc(
     logger.debug(f"Initial OPeNDAP URL: {opendap_url}")
 
     logger.info("Downloading data from OPeNDAP")
-    outpath = file_from_opendap(opendap_url, outdir)
+    outpath = file_from_opendap(opendap_url, outdir, outfile)
     logger.debug(f"Result avaialble at {outpath}")
 
     logger.info("Complete")
