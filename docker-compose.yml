@@ -1,0 +1,14 @@
+version: '3.0'
+services:
+  orca:
+    image: pcic/orca:latest
+    container_name: orca
+    ports:
+      - "30333:5000"
+    env_file:
+      - deployment.env
+
+networks:
+  default:
+    external:
+      name: pcicbr0

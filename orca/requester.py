@@ -2,25 +2,43 @@ import logging
 from xarray import open_mfdataset, open_dataset
 import re
 from math import ceil
+import os
+from datetime import datetime
 
 
 logger = logging.getLogger("scripts")
 
 
-def file_from_opendap(url, outfile):
+def file_from_opendap(url, outdir, outfile):
     """Write to file from OPeNDAP link"""
-    data = open_dataset(url)
-    urls = split_url(url, data.nbytes)
-    logger.debug(f"URL(s) for downloading: {urls})")
+    checkset = open_dataset(url)
+    urls = split_url(url, checkset.nbytes)
 
-    logger.debug(f"Downloading and merging {len(urls)} split files")
-    open_mfdataset(urls, combine="nested", concat_dim="time").to_netcdf(outfile)
-    logger.debug("File writing complete")
+    logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
+    dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
+    outpath = to_file(dataset, outdir, outfile)
+
+    return outpath
 
 
-def build_url(thredds_base, filepath, variable, lat, lon):
+def to_file(dataset, outdir, outfile=""):
+    """Write netcdf to generated filename"""
+    if not outfile:
+        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        outfile = f"orca-output-{now}"
+
+    outpath = outdir + outfile
+
+    logger.debug("Begin file write")
+    dataset.to_netcdf(outpath)
+    logger.debug("File write complete")
+
+    return outpath
+
+
+def build_opendap_url(thredds_base, filepath, targets):
     """Construct url for OPeNDAP"""
-    return f"{thredds_base}{filepath}?{variable}{lat}{lon}"
+    return f"{thredds_base}{filepath}?{targets}"
 
 
 def split_url(url, size, threshold=5e8):
@@ -35,7 +53,7 @@ def split_url(url, size, threshold=5e8):
     bytes = size / 2
 
     if bytes > threshold:
-        logger.debug(f"Splitting, request over threshold: {bytes}")
+        logger.debug(f"Splitting, request over threshold: {bytes * 10**-6}/500mb")
         start_end_format = re.compile(r"(([a-z]+)\[(\d*)(:\d*){0,1}:(\d*)\])")
         var_time, var, start, stride, end = start_end_format.findall(url)[0]
         start = int(start)
@@ -60,5 +78,5 @@ def split_url(url, size, threshold=5e8):
         return urls
 
     else:
-        logger.debug(f"Request under threshold: {bytes}")
+        logger.debug(f"Request under threshold: {bytes * 10**-6}/500mb")
         return [url]

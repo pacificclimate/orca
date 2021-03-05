@@ -11,3 +11,8 @@ def setup_logging(log_level):
     logger.addHandler(handler)
     logger.setLevel(getattr(logging, log_level))
     return logger
+
+
+def get_filename_from_path(path):
+    """Given a path, return the filename on the end"""
+    return path.split("/")[-1]

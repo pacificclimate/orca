@@ -4,7 +4,7 @@ from math import ceil
 from tempfile import NamedTemporaryFile
 from xarray import open_dataset
 
-from orca.requester import file_from_opendap, build_url, split_url
+from orca.requester import file_from_opendap, build_opendap_url, split_url
 
 
 @pytest.mark.online
@@ -15,39 +15,37 @@ from orca.requester import file_from_opendap, build_url, split_url
             "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:1:1][0:1:1][0:1:1]"
         ),
         (
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[500:1:1100][0:1:509][0:1:1067]"
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:1:1000][0:1:200][0:1:200]"
         ),
     ],
 )
 def test_file_from_opendap(url):
     with NamedTemporaryFile(suffix=".nc", dir="/tmp") as temp:
-        file_from_opendap(url, temp.name)
+        file_from_opendap(url, outdir="", outfile=temp.name)
         with open_dataset(url) as expected, open_dataset(temp.name) as data:
             assert expected.dims == data.dims
 
 
 @pytest.mark.parametrize(
-    ("thredds_base", "filepath", "lat", "lon"),
+    ("thredds_base", "filepath"),
     [
         (
             "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
             "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc",
-            "[91:91]",
-            "[206:1:206]",
         ),
     ],
 )
 @pytest.mark.parametrize(
-    ("variable"),
+    ("targets"),
     [
-        "tasmax[0:1:55114]",
-        "tasmax[0:55114]",
+        "tasmax[0:1:55114][91:91][206:1:206]",
+        "tasmax[0:55114][91:91][206:1:206]",
     ],
 )
-def test_build_url(thredds_base, filepath, variable, lat, lon):
-    url = build_url(thredds_base, filepath, variable, lat, lon)
-    assert url.startswith(f"{thredds_base}{filepath}")
-    assert url.endswith(f"{variable}{lat}{lon}")
+def test_build_opendap_url(thredds_base, filepath, targets):
+    url = build_opendap_url(thredds_base, filepath, targets)
+    for expected in [thredds_base, filepath, targets]:
+        assert expected in url
 
 
 @pytest.mark.parametrize(
