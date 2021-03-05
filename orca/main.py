@@ -6,7 +6,6 @@ from orca.utils import setup_logging
 def orc(
     unique_id,
     targets,
-    connection_string="postgresql://httpd_meta@db3.pcic.uvic.ca/pcic_meta",
     thredds_base="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     outdir="/tmp/",
     log_level="INFO",
@@ -21,7 +20,7 @@ def orc(
     logger.info("Processing data file request")
 
     logger.debug("Starting db session")
-    sesh = start_session(connection_string)
+    sesh = start_session()
     filepath = find_filepath(sesh, unique_id)
     logger.debug(f"Got filepath: {filepath}")
 
