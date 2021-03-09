@@ -4,7 +4,7 @@ services:
     image: pcic/orca:latest
     container_name: orca
     ports:
-      - "30333:5000"
+      - "30333:8080"
     env_file:
       - deployment.env
 
