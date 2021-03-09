@@ -15,9 +15,10 @@ WORKDIR /app
 
 RUN pip install -U pip && \
     pip install -r requirements.txt && \
+    pip install waitress && \
     pip install -e .
 
 COPY . /app
 
 EXPOSE 5000
-CMD ["python", "orca/app.py"]
+CMD ["waitress-serve", "orca:create_app"]
