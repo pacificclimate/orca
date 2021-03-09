@@ -21,4 +21,4 @@ RUN pip install -U pip && \
 COPY . /app
 
 EXPOSE 8080
-CMD ["waitress-serve", "orca:create_app"]
+CMD ["waitress-serve", "--call", "orca:create_app"]
