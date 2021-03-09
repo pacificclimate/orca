@@ -1,3 +1,5 @@
+"""Module responsible for handling databse related actions"""
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from modelmeta import DataFile
