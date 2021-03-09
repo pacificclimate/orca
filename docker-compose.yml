@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   orca:
-    image: pcic/orca:latest
+    image: pcic/orca:i23-create-production-app
     container_name: orca
     ports:
       - "30333:8080"
