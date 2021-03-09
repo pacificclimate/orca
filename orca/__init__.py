@@ -1,12 +1,14 @@
 from flask import Flask
 
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_pyfile("config.py")
+def create_app(config="config.ProdConfig"):
+    """Application factory for orca"""
+    app = Flask(__name__, instance_relative_config=False)
+    app.config.from_object(config)
 
-    from orca.routes import data
+    with app.app_context():
+        from .routes import data
 
-    app.register_blueprint(data)
+        app.register_blueprint(data)
 
-    return app
+        return app
