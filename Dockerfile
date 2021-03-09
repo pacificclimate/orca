@@ -15,10 +15,10 @@ WORKDIR /app
 
 RUN pip install -U pip && \
     pip install -r requirements.txt && \
-    pip install waitress && \
+    pip install gunicorn && \
     pip install -e .
 
 COPY . /app
 
 EXPOSE 5000
-CMD ["waitress-serve", "--port=5000", "orca:create_app"]
+CMD ["gunicorn", "--bind=0.0.0.0:5000", "orca:create_app()"]
