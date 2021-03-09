@@ -1,8 +1,13 @@
+from flask import Blueprint, send_file
 from orca.db_handler import find_filepath, start_session
 from orca.requester import build_opendap_url, file_from_opendap
-from orca.utils import setup_logging
+from orca.utils import setup_logging, get_filename_from_path
 
 
+data = Blueprint("data", __name__, url_prefix="/data")
+
+
+@data.route("/<string:unique_id>/<string:targets>", methods=["GET", "POST"])
 def orc(
     unique_id,
     targets,
@@ -33,4 +38,9 @@ def orc(
     logger.debug(f"Result avaialble at {outpath}")
 
     logger.info("Complete")
-    return outpath
+    return send_file(
+        outpath,
+        mimetype="application/x-netcdf",
+        as_attachment=True,
+        attachment_filename=get_filename_from_path(outpath),
+    )
