@@ -45,7 +45,7 @@ def orc(
 @data.route("/<string:unique_id>/<string:targets>", methods=["GET", "POST"])
 def orc_route(unique_id, targets):
     """Wraps orc into a usable route with simplified inputs"""
-    outpath = orc(unique_id, targets)
+    outpath = orc(unique_id, targets, log_level="DEBUG")
 
     return send_file(
         outpath,
