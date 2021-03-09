@@ -2,7 +2,7 @@ import pytest
 from xarray import open_dataset
 from tempfile import NamedTemporaryFile
 
-from orca import main, requester, db_handler
+from orca import routes
 
 
 @pytest.mark.online
@@ -25,9 +25,9 @@ from orca import main, requester, db_handler
         ),
     ],
 )
-def test_main(unique_id, targets, expected):
+def test_orc(unique_id, targets, expected):
     with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
-        outpath = main.orc(unique_id, targets, outdir="", outfile=outfile.name)
+        outpath = routes.orc(unique_id, targets, outdir="", outfile=outfile.name)
 
         with open_dataset(outpath) as result, open_dataset(expected) as expected:
             assert result.dims == expected.dims
