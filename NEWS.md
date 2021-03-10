@@ -1,5 +1,8 @@
 # News / Release Notes
 
+## 1.1.0
+- Bolster application for production use
+
 ## 1.0.0
 - Rework inputs
 - Dockerize application
