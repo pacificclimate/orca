@@ -1,5 +1,5 @@
 import click
-from orca.routes import orc
+from orca.compiler import orc
 
 
 @click.command()
