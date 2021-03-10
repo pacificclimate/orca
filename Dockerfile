@@ -15,9 +15,10 @@ WORKDIR /app
 
 RUN pip install -U pip && \
     pip install -r requirements.txt && \
+    pip install gunicorn && \
     pip install -e .
 
 COPY . /app
 
 EXPOSE 5000
-CMD ["python", "orca/app.py"]
+CMD ["gunicorn", "--bind=0.0.0.0:5000", "orca:create_app()"]

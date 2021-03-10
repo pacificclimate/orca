@@ -10,21 +10,39 @@ source /tmp/orca-venv/bin/activate
 ```
 
 ## Run App
-### Locally
-Before starting the app, ensure that you have set all the required environment variables:
+### Local
+There are multiple ways to run `orca` on your local machine. The sections below detail the commands you'll need start up the instance that works for you. Before running any of the options below, you must export the `DSN` environment variable:
 ```
-export FLASK_APP=orca/app.py
+# This variable is responsible for connecting `orca` to the `pcic_meta` database
 export DSN=postgresql://<USER>:<PASSWORD>@db3.pcic.uvic.ca/pcic_meta
 ```
 
-Once those have all been set, `Flask` can be used to spin up an instance of `orca` on your local machine:
+Once an instance is running, you can request data from `orca` using a url in the following format:
 ```
-flask run
+# Generic example
+http://127.0.0.1:5000/data/[unique_id]/[variable][time_start:time_end][lat_start:lat_end][lon_start:lon_end]
+
+# Example
+http://127.0.0.1:5000/data/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
 ```
 
-When the instance is running you can request a url in your browser in this form:
+#### `Gunicorn`
+`Gunicorn` is the tool we use to deploy a robust instance of `orca` on Docker. There are 3 different options that can be started using the `Makefile`:
 ```
-http://127.0.0.1:5000/orca/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
+make prod-app # for production
+make dev-app  # for development
+make test-app # for testing
+```
+
+#### `Flask`
+If you wish to run a simpler instance locally you can spin up a basic `Flask` app. Before starting the app, you'll need to point `Flask` to the app using an environment variable:
+```
+export FLASK_APP=wsgi.py
+```
+
+Once that has been set, use the command below to start the app:
+```
+flask run
 ```
 
 ### Docker
@@ -37,9 +55,13 @@ To stop the container:
 docker-compose down
 ```
 
-Again you will be able to acesss the service through a url:
+The url will be in the same format but will have a different prefix:
 ```
-http://docker-dev03.pcic.uvic.ca:30333/orca/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
+# Generic example
+http://docker-dev03.pcic.uvic.ca:30333/data/[unique_id]/[variable][time_start:time_end][lat_start:lat_end][lon_start:lon_end]
+
+# Example
+http://docker-dev03.pcic.uvic.ca:30333/data/tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada/tasmax[0:150][0:91][0:206]
 ```
 
 *NOTE: The variables in `deployment.env` are private and as such must not be committed to the repo*

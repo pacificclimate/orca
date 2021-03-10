@@ -40,3 +40,18 @@ performance: venv install
 	${PIP} install snakeviz
 	${PYTHON} -m cProfile -o program.prof scripts/process.py -u tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada -t tasmax[0:15000][0:91][0:206] -l DEBUG
 	${PYTHON} -m snakeviz program.prof
+
+.PHONY: prod-app
+prod-app: venv install
+	${PIP} install gunicorn
+	source ${VENV_PATH}/bin/activate && gunicorn --bind=0.0.0.0:5000 'orca:create_app()'
+
+.PHONY: dev-app
+dev-app: venv install
+	${PIP} install gunicorn
+	source ${VENV_PATH}/bin/activate && gunicorn --bind=0.0.0.0:5000 'orca:create_app("config.DevConfig")'
+
+.PHONY: test-app
+test-app: venv install
+	${PIP} install gunicorn
+	source ${VENV_PATH}/bin/activate && gunicorn --bind=0.0.0.0:5000 'orca:create_app("config.TestConfig")'

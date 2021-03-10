@@ -1,3 +1,5 @@
+"""Module responsible for handling requests to data servers"""
+
 import logging
 from xarray import open_mfdataset, open_dataset
 import re
