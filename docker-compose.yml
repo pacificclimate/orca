@@ -1,10 +1,10 @@
 version: '3.0'
 services:
   orca:
-    image: pcic/orca:i23-create-production-app
+    image: pcic/orca:1.1.0
     container_name: orca
     ports:
-      - "30333:8080"
+      - "30333:5000"
     env_file:
       - deployment.env
 
