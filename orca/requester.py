@@ -51,10 +51,10 @@ def bisect_request(url, threshold=5e8):
     the leftover piece). If the request is under the threshold we can just
     return the url inside of a list.
 
-    NOTE: Server error reports dataset size = dataset.nbytes/2
+    NOTE: Server error reports dataset size = dataset.nbytes / 2
     """
     checkset = open_dataset(url)
-    bytes = checkset.nbytes / 2
+    bytes = checkset.nbytes
 
     if bytes < threshold:
         logger.debug(f"Request under threshold: {round(bytes * 10**-6)}/500 mb")
