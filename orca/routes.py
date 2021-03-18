@@ -12,7 +12,8 @@ data = Blueprint("data", __name__, url_prefix="/data")
 @data.route("/<path:filepath>:<string:targets>", methods=["GET", "POST"])
 def orc_route(filepath, targets):
     """Wraps orc into a usable route with simplified inputs"""
-    filepath = unquote(filepath)
+    # Flask will gobble the leading / for the storage path, add it back
+    filepath = f"/{unquote(filepath)}"
     targets = unquote(targets)
 
     outpath = orc(filepath, targets, log_level="DEBUG")
