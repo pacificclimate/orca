@@ -38,7 +38,7 @@ venv:
 .PHONY: performance
 performance: venv install
 	${PIP} install snakeviz
-	${PYTHON} -m cProfile -o program.prof scripts/process.py -u tasmax_day_BCCAQv2_CanESM2_historical-rcp85_r1i1p1_19500101-21001231_Canada -t tasmax[0:15000][0:91][0:206] -l DEBUG
+	${PYTHON} -m cProfile -o program.prof scripts/process.py -p /storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc -t tasmax[0:1:15000][0:1:91][0:1:206] -l DEBUG
 	${PYTHON} -m snakeviz program.prof
 
 .PHONY: prod-app

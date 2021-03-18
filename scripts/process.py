@@ -3,7 +3,7 @@ from orca.compiler import orc
 
 
 @click.command()
-@click.option("-u", "--unique-id", help="Unique_id to search for in DB")
+@click.option("-p", "--filepath", help="Filepath to retrieve")
 @click.option(
     "-t",
     "--targets",
@@ -28,9 +28,9 @@ from orca.compiler import orc
         ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], case_sensitive=False
     ),
 )
-def process(unique_id, targets, thredds_base, outdir, outfile, log_level):
+def process(filepath, targets, thredds_base, outdir, outfile, log_level):
     """CLI for orca"""
-    orc(unique_id, targets, thredds_base, outdir, outfile, log_level)
+    orc(filepath, targets, thredds_base, outdir, outfile, log_level)
 
 
 if __name__ == "__main__":
