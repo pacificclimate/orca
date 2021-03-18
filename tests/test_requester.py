@@ -57,6 +57,10 @@ def test_build_opendap_url(thredds_base, filepath, targets):
             1,
         ),
         (
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/CMIP5/BCSD/pr+tasmax+tasmin_day_BCSD+ANUSPLIN300+GFDL-ESM2G_historical+rcp26_r1i1p1_19500101-21001231.nc?tasmax[0:1:7500][0:1:91][0:1:206]",
+            2,
+        ),
+        (
             "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/CMIP5/BCSD/pr+tasmax+tasmin_day_BCSD+ANUSPLIN300+GFDL-ESM2G_historical+rcp26_r1i1p1_19500101-21001231.nc?tasmax[0:1:15000][0:1:91][0:1:206]",
             4,
         ),
