@@ -1,6 +1,5 @@
 """The compiler module runs through all the steps to produce an ORCA output"""
 
-from orca.db_handler import find_filepath, start_session
 from orca.requester import build_opendap_url, file_from_opendap
 from orca.utils import setup_logging
 

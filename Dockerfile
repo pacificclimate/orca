@@ -4,7 +4,6 @@ ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
 RUN apt-get update && \
     apt-get install -y gcc \
-      libpq-dev \
       libhdf5-serial-dev \
       netcdf-bin \
       libnetcdf-dev

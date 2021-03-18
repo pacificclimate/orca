@@ -11,11 +11,7 @@ source /tmp/orca-venv/bin/activate
 
 ## Run App
 ### Local
-There are multiple ways to run `orca` on your local machine. The sections below detail the commands you'll need start up the instance that works for you. Before running any of the options below, you must export the `DSN` environment variable:
-```
-# This variable is responsible for connecting `orca` to the `pcic_meta` database
-export DSN=postgresql://<USER>:<PASSWORD>@db3.pcic.uvic.ca/pcic_meta
-```
+There are multiple ways to run `orca` on your local machine. The sections below detail the commands you'll need start up the instance that works for you.
 
 Once an instance is running, you can request data from `orca` using a url in the following format:
 ```
@@ -46,7 +42,7 @@ flask run
 ```
 
 ### Docker
-To run the `orca` docker container ensure that you have set all variables in the `deployment.env` then run:
+To run the `orca` docker container use the following:
 ```
 docker-compose up -d
 ```
@@ -63,5 +59,3 @@ http://docker-dev03.pcic.uvic.ca:30333/data/[filepath]:[variable][time_start:tim
 # Example
 http://docker-dev03.pcic.uvic.ca:30333/data//storage/data/climate/downscale/CMIP5/BCSD/pr+tasmax+tasmin_day_BCSD+ANUSPLIN300+GFDL-ESM2G_historical+rcp26_r1i1p1_19500101-21001231.nc:tasmax[0:150][0:91][0:206]
 ```
-
-*NOTE: The variables in `deployment.env` are private and as such must not be committed to the repo*
