@@ -43,17 +43,17 @@ def build_opendap_url(thredds_base, filepath, targets):
 
 
 def bisect_request(url, threshold=5e8):
-    """Based on the request range, split request into edible chunks for THREDDS
+    """Recursively bisect request until each piece is small enough for THREDDS
 
     OPeNDAP requests have a limit of 500MB, because of that we want to ensure
     that the request(s) we send are under that threshold. To do so we use the
-    known initial request size and partition it into equal chunks (except for
-    the leftover piece). If the request is under the threshold we can just
-    return the url inside of a list.
+    known initial request size to determine if we bisect the request. The base
+    case is when a request is under the threshold. This method will construct
+    a list of requests.
 
-    NOTE: Server error reports dataset size = dataset.nbytes / 2. We are
-    maintaining the original size for the sake of ensuring the requests are
-    small enough.
+    NOTE: Server error reports dataset size = dataset.nbytes / 2. This method
+    will maintain the size reported to ensure that the split is small enough
+    to pass through the threshold.
     """
     checkset = open_dataset(url)
     bytes = checkset.nbytes
