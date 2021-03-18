@@ -19,7 +19,7 @@ Once an instance is running, you can request data from `orca` using a url in the
 http://127.0.0.1:5000/data/[filepath]:[variable][time_start:time_end][lat_start:lat_end][lon_start:lon_end]
 
 # Example
-http://127.0.0.1:5000/data//storage/data/climate/downscale/CMIP5/BCSD/pr+tasmax+tasmin_day_BCSD+ANUSPLIN300+GFDL-ESM2G_historical+rcp26_r1i1p1_19500101-21001231.nc:tasmax[0:150][0:91][0:206]
+http://127.0.0.1:5000/data//storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc:tasmin[0:150][0:91][0:206]
 ```
 
 #### `Gunicorn`
@@ -57,5 +57,5 @@ The url will be in the same format but will have a different prefix:
 http://docker-dev03.pcic.uvic.ca:30333/data/[filepath]:[variable][time_start:time_end][lat_start:lat_end][lon_start:lon_end]
 
 # Example
-http://docker-dev03.pcic.uvic.ca:30333/data//storage/data/climate/downscale/CMIP5/BCSD/pr+tasmax+tasmin_day_BCSD+ANUSPLIN300+GFDL-ESM2G_historical+rcp26_r1i1p1_19500101-21001231.nc:tasmax[0:150][0:91][0:206]
+http://docker-dev03.pcic.uvic.ca:30333/data//storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc:tasmin[0:150][0:91][0:206]
 ```
