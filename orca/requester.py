@@ -13,8 +13,7 @@ logger = logging.getLogger("scripts")
 
 def file_from_opendap(url, outdir, outfile):
     """Write to file from OPeNDAP link"""
-    checkset = open_dataset(url)
-    urls = split_url(url, checkset.nbytes)
+    urls = bisect_request(url)
 
     logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
     dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
@@ -43,7 +42,7 @@ def build_opendap_url(thredds_base, filepath, targets):
     return f"{thredds_base}{filepath}?{targets}"
 
 
-def split_url(url, size, threshold=5e8):
+def bisect_request(url, threshold=5e8):
     """Based on the request range, split request into edible chunks for THREDDS
 
     OPeNDAP requests have a limit of 500MB, because of that we want to ensure
@@ -51,34 +50,26 @@ def split_url(url, size, threshold=5e8):
     known initial request size and partition it into equal chunks (except for
     the leftover piece). If the request is under the threshold we can just
     return the url inside of a list.
+
+    NOTE: Server error reports dataset size = dataset.nbytes/2
     """
-    bytes = size / 2
+    checkset = open_dataset(url)
+    bytes = checkset.nbytes / 2
 
-    if bytes > threshold:
-        logger.debug(f"Splitting, request over threshold: {bytes * 10**-6}/500mb")
-        start_end_format = re.compile(r"(([a-z]+)\[(\d*)(:\d*){0,1}:(\d*)\])")
-        var_time, var, start, stride, end = start_end_format.findall(url)[0]
-        start = int(start)
-        end = int(end)
-
-        # Server error reports dataset size = dataset.nbytes/2
-        chunks = ceil(bytes / threshold)
-        total = end - start
-        step = int(total // chunks)
-
-        chunk_end = start + step
-        urls = []
-
-        while chunk_end < end:
-            urls.append(url.replace(var_time, f"{var}[{start}{stride}:{chunk_end}]"))
-            start = chunk_end + 1
-            chunk_end += step
-
-        if start <= end:
-            urls.append(url.replace(var_time, f"{var}[{start}{stride}:{end}]"))
-
-        return urls
+    if bytes < threshold:
+        logger.debug(f"Request under threshold: {round(bytes * 10**-6)}/500 mb")
+        return [url]
 
     else:
-        logger.debug(f"Request under threshold: {bytes * 10**-6}/500mb")
-        return [url]
+        logger.debug(
+            f"Splitting, request over threshold: {round(bytes * 10**-6)}/500 mb"
+        )
+        start_end_format = re.compile(r"(([a-z]+)\[(\d*)(:\d*){0,1}:(\d*)\])")
+        var_time, var, start, stride, end = start_end_format.findall(url)[0]
+
+        pivot = int((int(start) + int(end)) / 2)
+
+        front = url.replace(var_time, f"{var}[{start}{stride}:{pivot}]")
+        back = url.replace(var_time, f"{var}[{pivot + 1}{stride}:{end}]")
+
+        return bisect_request(front) + bisect_request(back)
