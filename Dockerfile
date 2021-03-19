@@ -4,7 +4,6 @@ ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
 RUN apt-get update && \
     apt-get install -y gcc \
-      libpq-dev \
       libhdf5-serial-dev \
       netcdf-bin \
       libnetcdf-dev
@@ -21,4 +20,4 @@ RUN pip install -U pip && \
 COPY . /app
 
 EXPOSE 5000
-CMD ["gunicorn", "--bind=0.0.0.0:5000", "orca:create_app()"]
+CMD ["gunicorn", "--timeout", "600", "--bind=0.0.0.0:5000", "orca:create_app()"]

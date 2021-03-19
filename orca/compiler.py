@@ -1,23 +1,11 @@
-"""The compiler module runs through all the steps to produce an ORCA output
+"""The compiler module runs through all the steps to produce an ORCA output"""
 
-Set up database
-|
-Search for filepath in database
-|
-Construct OPeNDAP URL with filepath
-|
-"Smart" download data (this is using the splitting and recompiling strategy)
-|
-Return
-"""
-
-from orca.db_handler import find_filepath, start_session
 from orca.requester import build_opendap_url, file_from_opendap
 from orca.utils import setup_logging
 
 
 def orc(
-    unique_id,
+    filepath,
     targets,
     thredds_base="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     outdir="/tmp/",
@@ -32,11 +20,6 @@ def orc(
     """
     logger = setup_logging(log_level)
     logger.info("Processing data file request")
-
-    logger.debug("Starting db session")
-    sesh = start_session()
-    filepath = find_filepath(sesh, unique_id)
-    logger.debug(f"Got filepath: {filepath}")
 
     opendap_url = build_opendap_url(thredds_base, filepath, targets)
     logger.debug(f"Initial OPeNDAP URL: {opendap_url}")
