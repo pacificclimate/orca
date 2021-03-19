@@ -1,5 +1,9 @@
 # News / Release Notes
 
+## 2.0.0
+- Reworked endpoint
+- Removed database usage
+
 ## 1.1.0
 - Bolster application for production use
 
