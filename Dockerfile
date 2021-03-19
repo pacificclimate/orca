@@ -20,4 +20,4 @@ RUN pip install -U pip && \
 COPY . /app
 
 EXPOSE 5000
-CMD ["gunicorn", "--bind=0.0.0.0:5000", "orca:create_app()"]
+CMD ["gunicorn", "--timeout", "600", "--bind=0.0.0.0:5000", "orca:create_app()"]
