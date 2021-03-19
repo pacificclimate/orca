@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   orca:
-    image: pcic/orca:1.1.0
+    image: pcic/orca:2.0.0
     container_name: orca
     ports:
       - "30333:5000"
