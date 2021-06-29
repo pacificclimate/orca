@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+click = "*"
+xarray = "*"
+Flask = "*"
+netCDF4 = "*"
+gunicorn = "*"
+
+[dev-packages]
+black = "==21.6b0"
+pytest = "*"
+pre-commit = "*"
+
+[requires]
+python_version = "3.8"
+
+[packages.dask]
+extras = [ "dataframe",]
+
+[packages.e1839a8]
+path = "."
+editable = true

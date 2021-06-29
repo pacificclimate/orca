@@ -9,15 +9,12 @@ RUN apt-get update && \
       libnetcdf-dev
 
 COPY . /app
-
 WORKDIR /app
 
-RUN pip install -U pip && \
-    pip install -r requirements.txt && \
-    pip install gunicorn && \
-    pip install -e .
+RUN pip install -U pipenv && \
+    pipenv install 
 
 COPY . /app
 
 EXPOSE 5000
-CMD ["gunicorn", "--timeout", "600", "--bind=0.0.0.0:5000", "orca:create_app()"]
+CMD ["pipenv", "run", "gunicorn", "--timeout", "600", "--bind=0.0.0.0:5000", "orca:create_app()"]
