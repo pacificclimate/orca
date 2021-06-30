@@ -2,7 +2,7 @@ all: install test pre-commit-hook
 
 install:
 	pip install pipenv
-	pipenv install
+	pipenv install --dev
 
 pre-commit-hook: install
 	pipenv run pre-commit install
