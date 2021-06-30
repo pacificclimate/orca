@@ -3,7 +3,20 @@
 The purpose of orca is to pull apart large `OPeNDAP` requests to `THREDDS` into bite-sized chunks. These chunks are then reassembled before returning to the user.
 
 ## Installation
-We use `make` and `pipenv` for our installation process so the setup should be quick and painless! Simply paste `make` into your terminal to run a full install. If you wish to run commands from within the virtual environment use `pipenv shell` to activate it.
+If you are installing the project for the first time use:
+```
+make
+```
+This will install the dependencies, run the tests and install the `pre-commit` hook for formatting. Once that is all installed you are ready to code!
+
+`pipenv` is our tool of choice for handling packages and virtual environments. Here are some commands you may want to use:
+```
+pipenv install [package]    # install a package into the environment
+pipenv uninstall [package]  # uninstall a package from the environment
+pipenv run [command]        # run a command in the virtual environment
+pipenv lock                 # lock the current environment by updating `Pipfile.lock`
+```
+Other commands can be found in the [docs](https://pipenv.pypa.io/en/latest/).
 
 ## Run App
 ### Local
