@@ -24,4 +24,4 @@ test-app: install
 	pipenv run gunicorn --bind=0.0.0.0:5000 'orca:create_app("config.TestConfig")'
 
 clean-tmp:
-	docker exec -it orca rm /tmp/orca-output-*
+	ddocker exec -it orca find /tmp -name orca-output* -type f -mtime +1

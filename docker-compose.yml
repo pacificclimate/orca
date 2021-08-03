@@ -6,8 +6,8 @@ services:
     ports:
       - "30333:5000"
 
-    tmpfs: 
-      - /tmp
+    tmpfs:
+      - /tmp:size=5G
 
 networks:
   default:
