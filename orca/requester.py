@@ -55,6 +55,12 @@ def build_opendap_url(thredds_base, filepath, targets):
     are added to the url to download the entire data file"""
     if filepath.endswith("nc"):
         if targets:
+            targets = targets.replace(
+                "[:]", "[]"
+            )  # These are both treated as obtaining the full range of a dimension
+            targets = fill_target_bounds(
+                f"{thredds_base}{filepath}", targets
+            )  # Ensures that entire ranges of variables are obtained
         else:
             targets = build_all_targets(f"{thredds_base}{filepath}")
         return f"{thredds_base}{filepath}?{targets}"
@@ -66,6 +72,45 @@ def build_opendap_url(thredds_base, filepath, targets):
             return f"{thredds_base}{filepath}"
 
 
+def fill_target_bounds(url, targets):
+    """Fill in bounds for variables in which they are unspecified"""
+    dataset = open_dataset(url)
+    dims = dataset.dims
+    data_vars = dataset.data_vars
+
+    target_list = targets.split(",")
+    for (i, target) in enumerate(target_list):
+        target_var = target.split("[", 1)[0]
+
+        if target_var == target:  # No variable bounds are specified
+            if target_var in dims:
+                target += f"[0:{dims[target_var] - 1}]"
+            else:
+                sizes = "".join(
+                    [f"[0:{end - 1}]" for end in data_vars[target_var].sizes.values()]
+                )
+                target += sizes
+            target_list[i] = target
+
+        elif "[]" in target:  # At least one variable has unspecified bounds
+            if target_var in dims:
+                target = target.replace("[]", f"[0:{dims[target_var] - 1}]")
+            else:
+                target_bounds = "[" + target.split("[", 1)[1]
+                target_bounds = target_bounds.replace("][", "],[")
+                target_bound_list = target_bounds.split(",")
+
+                # Replace bounds given by empty brackets with full ranges
+                for (j, end) in enumerate(data_vars[target_var].sizes.values()):
+                    if target_bound_list[j] == "[]":
+                        target_bound_list[j] = f"[0:{end - 1}]"
+
+                target_bounds = "".join(target_bound_list)
+                target = target_var + target_bounds
+            target_list[i] = target
+
+    targets = ",".join(target_list)
+    return targets
 
 
 def build_all_targets(url):
