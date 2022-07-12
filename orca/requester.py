@@ -164,12 +164,27 @@ def bisect_request(url, threshold=5e8):
         logger.debug(
             f"Splitting, request over threshold: {round(bytes * 10**-6)}/500 mb"
         )
-        start_end_format = re.compile(r"(([a-z]+)\[(\d*)(:\d*){0,1}:(\d*)\])")
-        var_time, var, start, stride, end = start_end_format.findall(url)[0]
+        start_end_format_full = re.compile(
+            r"(([a-z]+)(\[(\d+)(:\d+){0,1}:(\d+)\]){3})"
+        )  # Three repetitions of [...] for time,lat,lon
+        data_var = start_end_format_full.search(url)[0]
+        start_end_format_time = re.compile(r"(([a-z]+)\[(\d+)(:\d+){0,1}:(\d+)\])")
+        data_var_time, var, start, stride, end = start_end_format_time.findall(
+            data_var
+        )[0]
 
         pivot = int((int(start) + int(end)) / 2)
 
-        front = url.replace(var_time, f"{var}[{start}{stride}:{pivot}]")
-        back = url.replace(var_time, f"{var}[{pivot + 1}{stride}:{end}]")
+        front = url.replace(data_var_time, f"{var}[{start}{stride}:{pivot}]")
+        back = url.replace(data_var_time, f"{var}[{pivot + 1}{stride}:{end}]")
+
+        # Bisect time variable as well if it is requested
+        time_format = re.compile(r"time(\[(\d+)(:\d+){0,1}:(\d+)\]){0,1}")
+        try:
+            time_var = time_format.search(url)[0]
+            front = front.replace(time_var, f"time[{start}{stride}:{pivot}]")
+            back = back.replace(time_var, f"time[{pivot + 1}{stride}:{end}]")
+        except TypeError:  # time variable was not requested
+            pass
 
         return bisect_request(front) + bisect_request(back)
