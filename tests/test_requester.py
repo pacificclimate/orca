@@ -32,6 +32,7 @@ def test_file_from_opendap(url):
             assert expected.dims == data.dims
 
 
+@pytest.mark.online
 @pytest.mark.parametrize(
     ("thredds_base", "filepath"),
     [
