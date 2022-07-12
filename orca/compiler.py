@@ -6,7 +6,7 @@ from orca.utils import setup_logging
 
 def orc(
     filepath,
-    targets,
+    targets=None,
     thredds_base="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     outdir="/tmp/",
     outfile="",
