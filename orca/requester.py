@@ -20,9 +20,12 @@ def file_from_opendap(url, outdir, outfile):
     else:
         urls = bisect_request(url)
 
-    logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
-    dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
-    outpath = to_file(dataset, outdir, outfile)
+        logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
+        if len(urls) == 1:
+            dataset = open_dataset(urls[0])
+        else:
+            dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
+        outpath = to_file(dataset, outdir, outfile)
 
     return outpath
 
@@ -48,8 +51,12 @@ def to_file(dataset, outdir, outfile="", nc=True):
 
 
 def build_opendap_url(thredds_base, filepath, targets):
-    """Construct url for OPeNDAP"""
+    """Construct url for OPeNDAP. If target variables are not given, then all variables
+    are added to the url to download the entire data file"""
     if filepath.endswith("nc"):
+        if targets:
+        else:
+            targets = build_all_targets(f"{thredds_base}{filepath}")
         return f"{thredds_base}{filepath}?{targets}"
 
     else:  # .dds, .dds, or .ascii request
@@ -57,6 +64,35 @@ def build_opendap_url(thredds_base, filepath, targets):
             return f"{thredds_base}{filepath}?{targets}"
         else:
             return f"{thredds_base}{filepath}"
+
+
+
+
+def build_all_targets(url):
+    """Obtain all variable names and associated bounds so that all variables are
+    retained when downloading an entire netCDF file. This also ensures the time bounds
+    for the data variables and time coordinate are readily obtainable when bisecting the requests if needed."""
+    dataset = open_dataset(url)
+    dims = dataset.dims
+    targets = ",".join([f"{dim}[0:{end - 1}]" for (dim, end) in dims.items()])
+
+    # Remove "bnds" from targets if present
+    bnds_format = re.compile(r"bnds\[(\d+)(:\d+){0,1}:(\d+)\]")
+    try:
+        bnds_var = bnds_format.search(targets)[0]
+        targets = targets.replace(f",{bnds_var}", "")
+    except TypeError:
+        pass
+
+    data_vars = dataset.data_vars
+    data_var_list = []
+    for var in data_vars.keys():
+        sizes = "".join([f"[0:{end - 1}]" for end in data_vars[var].sizes.values()])
+        data_var_list.append(f"{var}{sizes}")
+
+    targets += ","
+    targets += ",".join(data_var_list)
+    return targets
 
 
 def bisect_request(url, threshold=5e8):
