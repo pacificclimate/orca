@@ -1,6 +1,7 @@
 """Module responsible for handling requests to data servers"""
 
 import logging
+import requests
 from xarray import open_mfdataset, open_dataset
 import re
 from math import ceil
@@ -13,7 +14,11 @@ logger = logging.getLogger("scripts")
 
 def file_from_opendap(url, outdir, outfile):
     """Write to file from OPeNDAP link"""
-    urls = bisect_request(url)
+    file_extension = url.split(".")[-1].split("?")[0]
+    if file_extension != "nc":
+        outpath = to_file(url, outdir, outfile, nc=False)
+    else:
+        urls = bisect_request(url)
 
     logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
     dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
@@ -22,8 +27,8 @@ def file_from_opendap(url, outdir, outfile):
     return outpath
 
 
-def to_file(dataset, outdir, outfile=""):
-    """Write netcdf to generated filename"""
+def to_file(dataset, outdir, outfile="", nc=True):
+    """Write data to generated filename"""
     if not outfile:
         now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         outfile = f"orca-output-{now}"
@@ -31,7 +36,12 @@ def to_file(dataset, outdir, outfile=""):
     outpath = outdir + outfile
 
     logger.debug("Begin file write")
-    dataset.to_netcdf(outpath)
+    if nc:
+        dataset.to_netcdf(outpath)
+    else:
+        f = open(outpath, "wb")
+        f.write(requests.get(dataset).content)
+        f.close()
     logger.debug("File write complete")
 
     return outpath
@@ -39,7 +49,14 @@ def to_file(dataset, outdir, outfile=""):
 
 def build_opendap_url(thredds_base, filepath, targets):
     """Construct url for OPeNDAP"""
-    return f"{thredds_base}{filepath}?{targets}"
+    if filepath.endswith("nc"):
+        return f"{thredds_base}{filepath}?{targets}"
+
+    else:  # .dds, .dds, or .ascii request
+        if targets:
+            return f"{thredds_base}{filepath}?{targets}"
+        else:
+            return f"{thredds_base}{filepath}"
 
 
 def bisect_request(url, threshold=5e8):
