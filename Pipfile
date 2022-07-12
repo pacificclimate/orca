@@ -12,7 +12,7 @@ gunicorn = "*"
 requests = "*"
 
 [dev-packages]
-black = "==21.6b0"
+black = "==22.3.0"
 pytest = "*"
 pre-commit = "*"
 snakeviz = "*"
