@@ -26,7 +26,7 @@ def orc(
 
     logger.info("Downloading data from OPeNDAP")
     outpath = file_from_opendap(opendap_url, outdir, outfile)
-    logger.debug(f"Result avaialble at {outpath}")
+    logger.debug(f"Result available at {outpath}")
 
     logger.info("Complete")
     return outpath
