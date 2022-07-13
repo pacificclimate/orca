@@ -17,12 +17,8 @@ from orca.requester import (
 @pytest.mark.parametrize(
     "url",
     [
-        (
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:1:1][0:1:1][0:1:1]"
-        ),
-        (
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:1:1000][0:1:200][0:1:200]"
-        ),
+        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:1:1][0:1:1][0:1:1]",
+        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:1:1000][0:1:200][0:1:200]",
     ],
 )
 def test_file_from_opendap(url):
@@ -50,6 +46,33 @@ def test_file_from_opendap(url):
     ],
 )
 def test_build_opendap_url(thredds_base, filepath, targets):
+    url = build_opendap_url(thredds_base, filepath, targets)
+    for expected in [thredds_base, filepath, targets]:
+        assert expected in url
+
+
+@pytest.mark.parametrize(
+    "thredds_base",
+    [
+        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+    ],
+)
+@pytest.mark.parametrize(
+    "filepath",
+    [
+        "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc.dds",
+        "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc.ascii",
+    ],
+)
+@pytest.mark.parametrize(
+    ("targets"),
+    [
+        "time",
+        "lat,lon",
+        "time,lat,lon",
+    ],
+)
+def test_build_opendap_url_metadata(thredds_base, filepath, targets):
     url = build_opendap_url(thredds_base, filepath, targets)
     for expected in [thredds_base, filepath, targets]:
         assert expected in url
