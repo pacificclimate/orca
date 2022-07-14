@@ -119,15 +119,9 @@ def build_all_targets(url):
     for the data variables and time coordinate are readily obtainable when bisecting the requests if needed."""
     dataset = open_dataset(url)
     dims = dataset.dims
-    targets = ",".join([f"{dim}[0:{end - 1}]" for (dim, end) in dims.items()])
-
-    # Remove "bnds" from targets if present
-    bnds_format = re.compile(r"bnds\[(\d+)(:\d+){0,1}:(\d+)\]")
-    try:
-        bnds_var = bnds_format.search(targets)[0]
-        targets = targets.replace(f",{bnds_var}", "")
-    except TypeError:
-        pass
+    targets = ",".join(
+        [f"{dim}[0:{end - 1}]" for (dim, end) in dims.items() if dim != "bnds"]
+    )
 
     data_vars = dataset.data_vars
     data_var_list = []
