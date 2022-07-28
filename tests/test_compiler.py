@@ -1,8 +1,14 @@
 import pytest
+import os
 from xarray import open_dataset
 from tempfile import NamedTemporaryFile
 
 from orca import compiler
+
+tmpdir = os.getenv("TMPDIR", default="/tmp")
+thredds_base = (
+    "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets"
+)
 
 
 @pytest.mark.slow
@@ -18,27 +24,28 @@ from orca import compiler
     [
         (
             "tasmin[0:0][0:91][0:206]",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:0][0:91][0:206]",
+            "tasmin[0:0][0:91][0:206]",
         ),
         (
             "tasmin[0:7500][0:91][0:206]",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:7500][0:91][0:206]",
+            "tasmin[0:7500][0:91][0:206]",
         ),
         (
             "tasmin[0:100][][]",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?tasmin[0:100][0:509][0:1067]",
+            "tasmin[0:100][0:509][0:1067]",
         ),
         (
             "lon,lat,time[0:100],tasmin[0:100][:][:]",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc?lon[0:1067],lat[0:509],time[0:100],tasmin[0:100][0:509][0:1067]",
+            "lon[0:1067],lat[0:509],time[0:100],tasmin[0:100][0:509][0:1067]",
         ),
     ],
 )
 def test_orc(filepath, targets, expected):
-    with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
+    expected_url = f"{thredds_base}{filepath}?{expected}"
+    with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
         outpath = compiler.orc(filepath, targets, outdir="", outfile=outfile.name)
 
-        with open_dataset(outpath) as result, open_dataset(expected) as expected:
+        with open_dataset(outpath) as result, open_dataset(expected_url) as expected:
             assert result.dims == expected.dims
 
         outfile.close()
@@ -46,20 +53,15 @@ def test_orc(filepath, targets, expected):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("filepath", "expected"),
+    ("filepath"),
     [
-        (
-            "/storage/data/projects/comp_support/daccs/test-data/tiny_hydromodel_gcm_climos.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/daccs/test-data/tiny_hydromodel_gcm_climos.nc",
-        ),
-        (
-            "/storage/data/projects/comp_support/daccs/test-data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/daccs/test-data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
-        ),
+        "/storage/data/projects/comp_support/daccs/test-data/tiny_hydromodel_gcm_climos.nc",
+        "/storage/data/projects/comp_support/daccs/test-data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
     ],
 )
-def test_orc_no_targets(filepath, expected):
-    with NamedTemporaryFile(suffix=".nc", dir="/tmp") as outfile:
+def test_orc_no_targets(filepath):
+    expected_url = f"{thredds_base}{filepath}"
+    with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
         outpath = compiler.orc(filepath, outdir="", outfile=outfile.name)
 
         with open_dataset(outpath) as result, open_dataset(expected) as expected:
@@ -137,7 +139,7 @@ def test_orc_no_targets(filepath, expected):
     ],
 )
 def test_orc_metadata_requests(filepath, expected):
-    with NamedTemporaryFile(dir="/tmp") as outfile:
+    with NamedTemporaryFile(dir=tmpdir) as outfile:
         outpath = compiler.orc(filepath, outdir="", outfile=outfile.name)
         if filepath.endswith(".das"):
             assert expected in open(outfile.name).read().rstrip("\n")
@@ -173,6 +175,6 @@ lat[4]
     ],
 )
 def test_orc_metadata_requests_with_targets(filepath, targets, expected):
-    with NamedTemporaryFile(dir="/tmp") as outfile:
+    with NamedTemporaryFile(dir=tmpdir) as outfile:
         outpath = compiler.orc(filepath, targets, outdir="", outfile=outfile.name)
         assert open(outfile.name).read().rstrip("\n") == expected

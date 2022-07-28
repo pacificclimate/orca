@@ -1,4 +1,5 @@
 import click
+import os
 from orca.compiler import orc
 
 
@@ -16,7 +17,10 @@ from orca.compiler import orc
     default="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
 )
 @click.option(
-    "-o", "--outdir", help="Desired dir to store generated output", default="/tmp/"
+    "-o",
+    "--outdir",
+    help="Desired dir to store generated output",
+    default=os.getenv("TMPDIR", default="/tmp/"),
 )
 @click.option("-f", "--outfile", help="Custom output filename", default="")
 @click.option(

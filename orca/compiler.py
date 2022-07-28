@@ -2,13 +2,14 @@
 
 from orca.requester import build_opendap_url, file_from_opendap
 from orca.utils import setup_logging
+import os
 
 
 def orc(
     filepath,
     targets=None,
     thredds_base="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
-    outdir="/tmp/",
+    outdir=os.getenv("TMPDIR", default="/tmp/"),
     outfile="",
     log_level="INFO",
 ):
