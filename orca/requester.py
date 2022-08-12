@@ -14,19 +14,14 @@ logger = logging.getLogger("scripts")
 
 def file_from_opendap(url, outdir, outfile):
     """Write to file from OPeNDAP link"""
-    file_extension = url.split(".")[-1].split("?")[0]
-    if file_extension != "nc":
-        outpath = to_file(url, outdir, outfile, nc=False)
+    urls = bisect_request(url)
+
+    logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
+    if len(urls) == 1:
+        dataset = open_dataset(urls[0])
     else:
-        urls = bisect_request(url)
-
-        logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
-        if len(urls) == 1:
-            dataset = open_dataset(urls[0])
-        else:
-            dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
-        outpath = to_file(dataset, outdir, outfile)
-
+        dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
+    outpath = to_file(dataset, outdir, outfile)
     return outpath
 
 
@@ -53,23 +48,16 @@ def to_file(dataset, outdir, outfile="", nc=True):
 def build_opendap_url(thredds_base, filepath, targets):
     """Construct url for OPeNDAP. If target variables are not given, then all variables
     are added to the url to download the entire data file"""
-    if filepath.endswith("nc"):
-        if targets:
-            targets = targets.replace(
-                "[:]", "[]"
-            )  # These are both treated as obtaining the full range of a dimension
-            targets = fill_target_bounds(
-                f"{thredds_base}{filepath}", targets
-            )  # Ensures that entire ranges of variables are obtained
-        else:
-            targets = build_all_targets(f"{thredds_base}{filepath}")
-        return f"{thredds_base}{filepath}?{targets}"
-
-    else:  # .dds, .dds, or .ascii request
-        if targets:
-            return f"{thredds_base}{filepath}?{targets}"
-        else:
-            return f"{thredds_base}{filepath}"
+    if targets:
+        targets = targets.replace(
+            "[:]", "[]"
+        )  # These are both treated as obtaining the full range of a dimension
+        targets = fill_target_bounds(
+            f"{thredds_base}{filepath}", targets
+        )  # Ensures that entire ranges of variables are obtained
+    else:
+        targets = build_all_targets(f"{thredds_base}{filepath}")
+    return f"{thredds_base}{filepath}?{targets}"
 
 
 def fill_target_bounds(url, targets):

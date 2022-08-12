@@ -61,27 +61,6 @@ def test_build_opendap_url(filepath, targets):
         assert expected in url
 
 
-@pytest.mark.parametrize(
-    "filepath",
-    [
-        "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc.dds",
-        "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmax_day_BCCAQv2+ANUSPLIN300_CSIRO-Mk3-6-0_historical+rcp85_r1i1p1_19500101-21001231.nc.ascii",
-    ],
-)
-@pytest.mark.parametrize(
-    ("targets"),
-    [
-        "time",
-        "lat,lon",
-        "time,lat,lon",
-    ],
-)
-def test_build_opendap_url_metadata(filepath, targets):
-    url = build_opendap_url(thredds_base, filepath, targets)
-    for expected in [thredds_base, filepath, targets]:
-        assert expected in url
-
-
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("filepath"),
