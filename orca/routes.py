@@ -1,21 +1,31 @@
 """Defines all routes available to Flask app"""
 
-from flask import Blueprint, send_file
+from flask import Blueprint, request, send_file
 from urllib.parse import unquote
 from orca.compiler import orc
 from orca.requester import to_file
 from orca.utils import get_filename_from_path
-
+import os
 
 data = Blueprint("data", __name__, url_prefix="/data")
 
 
-@data.route("/<path:filepath>", methods=["GET", "POST"])
-@data.route("/<path:filepath>:<string:targets>", methods=["GET", "POST"])
-def orc_route(filepath, targets=None):
+@data.route("/", methods=["GET", "POST"])
+def orc_route():
     """Wraps orc into a usable route with simplified inputs"""
-    # Flask will gobble the leading / for the storage path, add it back
+    filepath = request.args.get("filepath")
+    targets = request.args.get("targets", None)
+    thredds_base = request.args.get(
+        "thredds_base",
+        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+    )
+    outdir = request.args.get("outdir", os.getenv("TMPDIR", default="/tmp/"))
+    outfile = request.args.get("outfile", "")
+    log_level = request.args.get("log_level", "INFO")
+
+    # Flask will gobble the leading / and '+' signs for the storage path, add them back
     filepath = f"/{unquote(filepath)}"
+    filepath = filepath.replace(" ", "+")
     if targets:
         targets = unquote(targets)
 
