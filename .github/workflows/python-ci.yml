@@ -17,10 +17,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install pipenv
+    - name: Install pipenv and orca
       run: |
         pip install -U pipenv
-    
+        pip install -e .
+
     - id: cache-pipenv
       uses: actions/cache@v2
       with:
