@@ -56,6 +56,7 @@ def build_opendap_url(thredds_base, filepath, targets):
         )  # Ensures that entire ranges of variables are obtained
     else:
         targets = build_all_targets(f"{thredds_base}{filepath}")
+    targets = decrement_end_bounds(targets)
     return f"{thredds_base}{filepath}?{targets}"
 
 
@@ -71,17 +72,17 @@ def fill_target_bounds(url, targets):
 
         if target_var == target:  # No variable bounds are specified
             if target_var in dims:
-                target += f"[0:{dims[target_var] - 1}]"
+                target += f"[0:{dims[target_var]}]"
             else:
                 sizes = "".join(
-                    [f"[0:{end - 1}]" for end in data_vars[target_var].sizes.values()]
+                    [f"[0:{end}]" for end in data_vars[target_var].sizes.values()]
                 )
                 target += sizes
             target_list[i] = target
 
         elif "[]" in target:  # At least one variable has unspecified bounds
             if target_var in dims:
-                target = target.replace("[]", f"[0:{dims[target_var] - 1}]")
+                target = target.replace("[]", f"[0:{dims[target_var]}]")
             else:
                 target_bounds = "[" + target.split("[", 1)[1]
                 target_bounds = target_bounds.replace("][", "],[")
@@ -90,7 +91,7 @@ def fill_target_bounds(url, targets):
                 # Replace bounds given by empty brackets with full ranges
                 for (j, end) in enumerate(data_vars[target_var].sizes.values()):
                     if target_bound_list[j] == "[]":
-                        target_bound_list[j] = f"[0:{end - 1}]"
+                        target_bound_list[j] = f"[0:{end}]"
 
                 target_bounds = "".join(target_bound_list)
                 target = target_var + target_bounds
@@ -107,17 +108,28 @@ def build_all_targets(url):
     dataset = open_dataset(url)
     dims = dataset.dims
     targets = ",".join(
-        [f"{dim}[0:{end - 1}]" for (dim, end) in dims.items() if dim != "bnds"]
+        [f"{dim}[0:{end}]" for (dim, end) in dims.items() if dim != "bnds"]
     )
 
     data_vars = dataset.data_vars
     data_var_list = []
     for var in data_vars.keys():
-        sizes = "".join([f"[0:{end - 1}]" for end in data_vars[var].sizes.values()])
+        sizes = "".join([f"[0:{end}]" for end in data_vars[var].sizes.values()])
         data_var_list.append(f"{var}{sizes}")
 
     targets += ","
     targets += ",".join(data_var_list)
+    return targets
+
+
+def decrement_end_bounds(targets):
+    """Decrement end indices of targets to avoid out of bounds exceptions for newly filled targets,
+    and to ensure that end bounds for initial targets are non-inclusive. The second condition is to maintain
+    consistency with requests in the PCIC Data Portal."""
+    end_format = re.compile(r"(\d+\])")
+    ends = set(end_format.findall(targets))
+    for end in ends:
+        targets = targets.replace(end, f"{str(int(end[:-1]) - 1)}]")
     return targets
 
 

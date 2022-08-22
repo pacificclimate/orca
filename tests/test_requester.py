@@ -10,6 +10,7 @@ from orca.requester import (
     build_opendap_url,
     fill_target_bounds,
     build_all_targets,
+    decrement_end_bounds,
     bisect_request,
 )
 
@@ -29,8 +30,8 @@ thredds_base = (
 @pytest.mark.parametrize(
     "targets",
     [
-        "tasmin[0:1:1][0:1:1][0:1:1]",
-        "tasmin[0:1:1000][0:1:200][0:1:200]",
+        "tasmin[0:1:2][0:1:2][0:1:2]",
+        "tasmin[0:1:1001][0:1:201][0:1:201]",
     ],
 )
 def test_file_from_opendap(filepath, targets):
@@ -49,15 +50,21 @@ def test_file_from_opendap(filepath, targets):
     ],
 )
 @pytest.mark.parametrize(
-    ("targets"),
+    ("init_targets", "final_targets"),
     [
-        "tasmax[0:1:55114][91:91][206:1:206]",
-        "tasmax[0:55114][91:91][206:1:206]",
+        (
+            "tasmax[0:1:55115][91:92][206:1:207]",
+            "tasmax[0:1:55114][91:91][206:1:206]",
+        ),
+        (
+            "tasmax[0:55115][91:92][206:1:207]",
+            "tasmax[0:55114][91:91][206:1:206]",
+        ),
     ],
 )
-def test_build_opendap_url(filepath, targets):
-    url = build_opendap_url(thredds_base, filepath, targets)
-    for expected in [thredds_base, filepath, targets]:
+def test_build_opendap_url(filepath, init_targets, final_targets):
+    url = build_opendap_url(thredds_base, filepath, init_targets)
+    for expected in [thredds_base, filepath, final_targets]:
         assert expected in url
 
 
@@ -73,15 +80,15 @@ def test_build_opendap_url(filepath, targets):
     [
         (
             "lon,lat[],time[0:50]",
-            "lon[0:1067],lat[0:509],time[0:50]",
+            "lon[0:1068],lat[0:510],time[0:50]",
         ),
         (
             "time,tasmin",
-            "time[0:55114],tasmin[0:55114][0:509][0:1067]",
+            "time[0:55115],tasmin[0:55115][0:510][0:1068]",
         ),
         (
             "tasmin[0:500][][]",
-            "tasmin[0:500][0:509][0:1067]",
+            "tasmin[0:500][0:510][0:1068]",
         ),
     ],
 )
@@ -99,11 +106,11 @@ def test_fill_target_bounds(filepath, targets, expected):
     [
         (
             "/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc",
-            "lon[0:1067],lat[0:509],time[0:55114],tasmin[0:55114][0:509][0:1067]",
+            "lon[0:1068],lat[0:510],time[0:55115],tasmin[0:55115][0:510][0:1068]",
         ),
         (
             "/storage/data/projects/comp_support/daccs/test-data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
-            "lon[0:3],lon_bnds[0:3][0:1],lat[0:3],lat_bnds[0:3][0:1],time[0:11],climatology_bnds[0:11][0:1],tasmin[0:11][0:3][0:3]",
+            "lon[0:4],lon_bnds[0:4][0:2],lat[0:4],lat_bnds[0:4][0:2],time[0:12],climatology_bnds[0:12][0:2],tasmin[0:12][0:4][0:4]",
         ),
     ],
 )
@@ -113,6 +120,24 @@ def test_build_all_targets(filepath, expected):
     target_list = targets.split(",")
     expected_list = expected.split(",")
     assert set(target_list) == set(expected_list)
+
+
+@pytest.mark.parametrize(
+    ("targets", "expected"),
+    [
+        (
+            "tasmin[0:1:1001][0:91][0:206]",
+            "tasmin[0:1:1000][0:90][0:205]",
+        ),
+        (
+            "time[0:1001],tasmin[0:1:1001][0:91][0:206]",
+            "time[0:1000],tasmin[0:1:1000][0:90][0:205]",
+        ),
+    ],
+)
+def test_decrement_end_bounds(targets, expected):
+    decremented = decrement_end_bounds(targets)
+    assert decremented == expected
 
 
 @pytest.mark.online
