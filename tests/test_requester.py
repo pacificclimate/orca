@@ -36,10 +36,18 @@ thredds_base = (
 )
 def test_file_from_opendap(filepath, targets):
     url = f"{thredds_base}{filepath}?{targets}"
-    with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as temp:
-        file_from_opendap(url, outdir="", outfile=temp.name)
-        with open_dataset(url) as expected, open_dataset(temp.name) as data:
-            assert expected.dims == data.dims
+    with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
+        file_from_opendap(url, outdir="", outfile=outfile.name)
+        with open_dataset(outfile.name) as result, open_dataset(url) as expected:
+            assert result.dims == expected.dims
+            assert all(
+                [
+                    data_var1 == data_var2
+                    for (data_var1, data_var2) in zip(
+                        result.data_vars, expected.data_vars
+                    )
+                ]
+            )
 
 
 @pytest.mark.online

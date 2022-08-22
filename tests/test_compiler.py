@@ -20,7 +20,7 @@ thredds_base = (
     ],
 )
 @pytest.mark.parametrize(
-    ("targets", "expected"),
+    ("targets", "expected_targets"),
     [
         (
             "tasmin[0:1][0:91][0:206]",
@@ -40,15 +40,21 @@ thredds_base = (
         ),
     ],
 )
-def test_orc(filepath, targets, expected):
-    expected_url = f"{thredds_base}{filepath}?{expected}"
+def test_orc(filepath, targets, expected_targets):
+    expected_url = f"{thredds_base}{filepath}?{expected_targets}"
     with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
         outpath = compiler.orc(filepath, targets, outdir="", outfile=outfile.name)
 
         with open_dataset(outpath) as result, open_dataset(expected_url) as expected:
             assert result.dims == expected.dims
-
-        outfile.close()
+            assert all(
+                [
+                    data_var1 == data_var2
+                    for (data_var1, data_var2) in zip(
+                        result.data_vars, expected.data_vars
+                    )
+                ]
+            )
 
 
 @pytest.mark.online
@@ -66,5 +72,11 @@ def test_orc_no_targets(filepath):
 
         with open_dataset(outpath) as result, open_dataset(expected_url) as expected:
             assert result.dims == expected.dims
-
-        outfile.close()
+            assert all(
+                [
+                    data_var1 == data_var2
+                    for (data_var1, data_var2) in zip(
+                        result.data_vars, expected.data_vars
+                    )
+                ]
+            )

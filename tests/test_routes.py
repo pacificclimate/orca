@@ -53,8 +53,14 @@ def test_nc_request(filepath, targets, expected, client):
             expected_url
         ) as expected:
             assert result.dims == expected.dims
-
-        outfile.close()
+            assert all(
+                [
+                    data_var1 == data_var2
+                    for (data_var1, data_var2) in zip(
+                        result.data_vars, expected.data_vars
+                    )
+                ]
+            )
 
 
 @pytest.mark.online
@@ -76,8 +82,14 @@ def test_nc_request_no_targets(filepath, client):
             expected_url
         ) as expected:
             assert result.dims == expected.dims
-
-        outfile.close()
+            assert all(
+                [
+                    data_var1 == data_var2
+                    for (data_var1, data_var2) in zip(
+                        result.data_vars, expected.data_vars
+                    )
+                ]
+            )
 
 
 @pytest.mark.online
