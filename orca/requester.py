@@ -4,7 +4,6 @@ import logging
 import requests
 from xarray import open_mfdataset, open_dataset
 import re
-from math import ceil
 import os
 from datetime import datetime
 
@@ -135,8 +134,8 @@ def bisect_request(url, threshold=5e8):
     will maintain the size reported to ensure that the split is small enough
     to pass through the threshold.
     """
-    checkset = open_dataset(url)
-    bytes = checkset.nbytes
+    dataset = open_dataset(url)
+    bytes = dataset.nbytes
 
     if bytes < threshold:
         logger.debug(f"Request under threshold: {round(bytes * 10**-6)}/500 mb")
@@ -146,24 +145,42 @@ def bisect_request(url, threshold=5e8):
         logger.debug(
             f"Splitting, request over threshold: {round(bytes * 10**-6)}/500 mb"
         )
-        start_end_format_full = re.compile(
-            r"(([a-z]+)(\[(\d+)(:\d+){0,1}:(\d+)\]){3})"
-        )  # Three repetitions of [...] for time,lat,lon
-        data_var = start_end_format_full.search(url)[0]
-        start_end_format_time = re.compile(r"(([a-z]+)\[(\d+)(:\d+){0,1}:(\d+)\])")
-        data_var_time, var, start, stride, end = start_end_format_time.findall(
-            data_var
-        )[0]
 
-        pivot = int((int(start) + int(end)) / 2)
+        # Bisect data variables
+        front = url
+        back = url
+        bounds_format = r"(\[(\d+)(:\d+){0,1}:(\d+)\])"
+        for data_var in dataset.data_vars:
+            time_index = list(dataset[data_var].sizes).index("time")
+            start_end_format = re.compile(
+                rf"{data_var}{bounds_format}{{{time_index}}}{bounds_format}"
+            )  # Last instance of bounds_format is the time component
+            data_var_old = start_end_format.search(url)[
+                0
+            ]  # Format is data_var[...][time_bnds]
+            time_bnds_old, start, stride, end = start_end_format.findall(data_var_old)[
+                0
+            ][-4:]
 
-        front = url.replace(data_var_time, f"{var}[{start}{stride}:{pivot}]")
-        back = url.replace(data_var_time, f"{var}[{pivot + 1}{stride}:{end}]")
+            pivot = int((int(start) + int(end)) / 2)
+            time_bnds_front = f"[{start}{stride}:{pivot}]"
+            time_bnds_back = f"[{pivot + 1}{stride}:{end}]"
+
+            # Replace last occurence of old bounds with new bounds (avoid changing non-time bounds)
+            time_pos = data_var_old.rfind(time_bnds_old)
+            time_bnds_length = len(time_bnds_old)
+            data_var_front = f"{data_var_old[:time_pos]}{time_bnds_front}{data_var_old[time_pos + time_bnds_length:]}"
+            data_var_back = f"{data_var_old[:time_pos]}{time_bnds_back}{data_var_old[time_pos + time_bnds_length:]}"
+
+            front = front.replace(data_var_old, data_var_front)
+            back = back.replace(data_var_old, data_var_back)
 
         # Bisect time variable as well if it is requested
-        time_format = re.compile(r"time(\[(\d+)(:\d+){0,1}:(\d+)\]){0,1}")
+        time_format = re.compile(rf"time{bounds_format}")
         try:
             time_var = time_format.search(url)[0]
+            start, stride, end = time_format.findall(time_var)[0][-3:]
+            pivot = int((int(start) + int(end)) / 2)
             front = front.replace(time_var, f"time[{start}{stride}:{pivot}]")
             back = back.replace(time_var, f"time[{pivot + 1}{stride}:{end}]")
         except TypeError:  # time variable was not requested
