@@ -127,7 +127,9 @@ def decrement_end_bounds(targets):
     and to ensure that end bounds for initial targets are non-inclusive. The second condition is to maintain
     consistency with requests in the PCIC Data Portal."""
     end_format = re.compile(r"(\d+\])")
-    ends = set(end_format.findall(targets))
+    ends = sorted(
+        set(end_format.findall(targets))
+    )  # Ensure that, for example, 3] is not decremented before 2] since this would decrement 3] twice
     for end in ends:
         targets = targets.replace(end, f"{str(int(end[:-1]) - 1)}]")
     return targets
