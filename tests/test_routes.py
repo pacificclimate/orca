@@ -44,7 +44,9 @@ def client():
 )
 def test_nc_request(filepath, targets, expected, client):
     expected_url = f"{thredds_base}{filepath}?{expected}"
-    with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
+    with NamedTemporaryFile(
+        suffix=os.path.basename(filepath), dir=tmpdir
+    ) as outfile:  # Ensure that '+' signs are in output file name
         basename = os.path.basename(outfile.name)
         input_url = f"/data/?filepath={filepath}&targets={targets}&outfile={basename}"
         client.get(input_url)

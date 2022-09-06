@@ -26,6 +26,8 @@ def orc_route():
     # Flask will gobble the leading / and '+' signs for the storage path, add them back
     filepath = f"/{unquote(filepath)}"
     filepath = filepath.replace(" ", "+")
+    # Add back '+' signs in output path if originally present
+    outfile = outfile.replace(" ", "+")
     if targets:
         targets = unquote(targets)
 
