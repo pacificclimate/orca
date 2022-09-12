@@ -47,21 +47,22 @@ def to_file(dataset, outdir, outfile="", nc=True):
 def build_opendap_url(thredds_base, filepath, targets):
     """Construct url for OPeNDAP. If target variables are not given, then all variables
     are added to the url to download the entire data file"""
+    base_url = f"{thredds_base}{filepath}"
+    dataset = open_dataset(base_url)
     if targets:
         targets = targets.replace(
             "[:]", "[]"
         )  # These are both treated as obtaining the full range of a dimension
         targets = fill_target_bounds(
-            f"{thredds_base}{filepath}", targets
+            dataset, targets
         )  # Ensures that entire ranges of variables are obtained
     else:
-        targets = build_all_targets(f"{thredds_base}{filepath}")
-    return f"{thredds_base}{filepath}?{targets}"
+        targets = build_all_targets(dataset)
+    return f"{base_url}?{targets}"
 
 
-def fill_target_bounds(url, targets):
+def fill_target_bounds(dataset, targets):
     """Fill in bounds for variables in which they are unspecified"""
-    dataset = open_dataset(url)
     dims = dataset.dims
     data_vars = dataset.data_vars
 
@@ -100,11 +101,10 @@ def fill_target_bounds(url, targets):
     return targets
 
 
-def build_all_targets(url):
+def build_all_targets(dataset):
     """Obtain all variable names and associated bounds so that all variables are
     retained when downloading an entire netCDF file. This also ensures the time bounds
     for the data variables and time coordinate are readily obtainable when bisecting the requests if needed."""
-    dataset = open_dataset(url)
     dims = dataset.dims
     targets = ",".join(
         [f"{dim}[0:{end - 1}]" for (dim, end) in dims.items() if dim != "bnds"]
