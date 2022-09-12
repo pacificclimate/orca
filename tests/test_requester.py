@@ -1,6 +1,7 @@
 import pytest
 import re
 import os
+from pkg_resources import resource_filename
 from math import ceil
 from tempfile import NamedTemporaryFile
 from xarray import open_dataset
@@ -93,9 +94,45 @@ def test_build_opendap_url(filepath, targets):
         ),
     ],
 )
-def test_fill_target_bounds(filepath, targets, expected):
+def test_fill_target_bounds_online(filepath, targets, expected):
     url = f"{thredds_base}{filepath}"
-    targets = fill_target_bounds(url, targets)
+    dataset = open_dataset(url)
+    targets = fill_target_bounds(dataset, targets)
+    target_list = targets.split(",")
+    expected_list = expected.split(",")
+    assert set(target_list) == set(expected_list)
+
+
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("filepath"),
+    [
+        resource_filename(
+            __name__,
+            "data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    ("targets", "expected"),
+    [
+        (
+            "lon,lat[],time[0:50]",
+            "lon[0:3],lat[0:3],time[0:50]",
+        ),
+        (
+            "time,tasmin",
+            "time[0:11],tasmin[0:11][0:3][0:3]",
+        ),
+        (
+            "tasmin[0:5][][]",
+            "tasmin[0:5][0:3][0:3]",
+        ),
+    ],
+)
+def test_fill_target_bounds_local(filepath, targets, expected):
+    dataset = open_dataset(filepath)
+    targets = fill_target_bounds(dataset, targets)
     target_list = targets.split(",")
     expected_list = expected.split(",")
     assert set(target_list) == set(expected_list)
@@ -115,9 +152,36 @@ def test_fill_target_bounds(filepath, targets, expected):
         ),
     ],
 )
-def test_build_all_targets(filepath, expected):
+def test_build_all_targets_online(filepath, expected):
     url = f"{thredds_base}{filepath}"
-    targets = build_all_targets(url)
+    dataset = open_dataset(url)
+    targets = build_all_targets(dataset)
+    target_list = targets.split(",")
+    expected_list = expected.split(",")
+    assert set(target_list) == set(expected_list)
+
+
+@pytest.mark.parametrize(
+    ("filepath", "expected"),
+    [
+        (
+            resource_filename(__name__, "data/tiny_hydromodel_gcm_climos.nc"),
+            "lon[0:1],lat[0:1],depth[0:2],time[0:16],climatology_bnds[0:16][0:1],"
+            "RUNOFF[0:16][0:1][0:1],BASEFLOW[0:16][0:1][0:1],EVAP[0:16][0:1][0:1],"
+            "GLAC_MBAL_BAND[0:16][0:2][0:1][0:1],GLAC_AREA_BAND[0:16][0:2][0:1][0:1],SWE_BAND[0:16][0:2][0:1][0:1]",
+        ),
+        (
+            resource_filename(
+                __name__,
+                "data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
+            ),
+            "lon[0:3],lon_bnds[0:3][0:1],lat[0:3],lat_bnds[0:3][0:1],time[0:11],climatology_bnds[0:11][0:1],tasmin[0:11][0:3][0:3]",
+        ),
+    ],
+)
+def test_build_all_targets_local(filepath, expected):
+    dataset = open_dataset(filepath)
+    targets = build_all_targets(dataset)
     target_list = targets.split(",")
     expected_list = expected.split(",")
     assert set(target_list) == set(expected_list)

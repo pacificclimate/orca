@@ -8,6 +8,8 @@ setup(
     description="OPeNDAP Request Compiler Application",
     install_requires=["dask[dataframe]", "Flask", "netCDF4", "requests", "xarray"],
     packages=["orca"],
+    package_data={"orca": ["tests/data/*.nc"]},
+    include_package_data=True,
     zip_safe=True,
     scripts=["scripts/process.py"],
     classifiers=[
