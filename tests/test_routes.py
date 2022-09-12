@@ -33,11 +33,11 @@ def client():
     ("targets", "expected"),
     [
         (
-            "tasmin[0:1][0:91][0:206]",
-            "tasmin[0:0][0:90][0:205]",
+            "tasmin[0:0][0:91][0:206]",
+            "tasmin[0:0][0:91][0:206]",
         ),
         (
-            "lon,lat,time[0:101]",
+            "lon,lat,time[0:100]",
             "lon[0:1067],lat[0:509],time[0:100]",
         ),
     ],

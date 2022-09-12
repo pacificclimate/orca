@@ -31,7 +31,7 @@ http://127.0.0.1:5000/data/?filepath=[filepath]&targets=[variable][time_start:ti
 http://127.0.0.1:5000/data/?filepath=/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc&targets=tasmin[0:150][0:91][0:206]
 ```
 
-Note that the end index is not included to maintain consistency with how requests are made in the PCIC Data Portal (i.e. the effective range for each dimension is `[start:end-1]`. You can also request multiple variables, including dimension variables (e.g. time, lat, lon), but the ranges for the dimension variables and the data variables must be the same. In the example request below, the time variable is omitted, but if it were included, it would have to be specified using `time[0:150]` due to the `tasmin[0:150]` portion.
+You can also request multiple variables, including dimension variables (e.g. time, lat, lon), but the ranges for the dimension variables and the data variables must be the same. In the example request below, the time variable is omitted, but if it were included, it would have to be specified using `time[0:150]` due to the `tasmin[0:150]` portion.
 ```
 # Example
 http://127.0.0.1:5000/data/?filepath=/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc&targets=lat[0:91],lon[0:206],tasmin[0:150][0:91][0:206]
