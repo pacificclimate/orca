@@ -30,7 +30,7 @@ def client():
     ],
 )
 @pytest.mark.parametrize(
-    ("targets", "expected"),
+    ("targets", "expected_targets"),
     [
         (
             "tasmin[0:0][0:91][0:206]",
@@ -42,27 +42,17 @@ def client():
         ),
     ],
 )
-def test_nc_request(filepath, targets, expected, client):
-    expected_url = f"{thredds_base}{filepath}?{expected}"
-    with NamedTemporaryFile(
-        suffix=os.path.basename(filepath), dir=tmpdir
-    ) as outfile:  # Ensure that '+' signs are in output file name
-        basename = os.path.basename(outfile.name)
-        input_url = f"/data/?filepath={filepath}&targets={targets}&outfile={basename}"
-        client.get(input_url)
+def test_nc_request(filepath, targets, expected_targets, client):
+    expected_url = f"{thredds_base}{filepath}?{expected_targets}"
+    basename = os.path.basename(filepath)
+    input_url = f"/data/?filepath={filepath}&targets={targets}&outfile={basename}"
+    nc_data = client.get(input_url).data
 
-        with open_dataset(outfile.name) as result, open_dataset(
-            expected_url
-        ) as expected:
-            assert result.dims == expected.dims
-            assert all(
-                [
-                    data_var1 == data_var2
-                    for (data_var1, data_var2) in zip(
-                        result.data_vars, expected.data_vars
-                    )
-                ]
-            )
+    with open_dataset(expected_url) as expected, NamedTemporaryFile(
+        suffix=".nc", dir=tmpdir
+    ) as expected_file:
+        expected.to_netcdf(expected_file.name)
+        assert nc_data == expected_file.read()
 
 
 @pytest.mark.online
@@ -75,23 +65,15 @@ def test_nc_request(filepath, targets, expected, client):
 )
 def test_nc_request_no_targets(filepath, client):
     expected_url = f"{thredds_base}{filepath}"
-    with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
-        basename = os.path.basename(outfile.name)
-        input_url = f"/data/?filepath={filepath}&outfile={basename}"
-        client.get(input_url)
+    basename = os.path.basename(filepath)
+    input_url = f"/data/?filepath={filepath}&outfile={basename}"
+    nc_data = client.get(input_url).data
 
-        with open_dataset(outfile.name) as result, open_dataset(
-            expected_url
-        ) as expected:
-            assert result.dims == expected.dims
-            assert all(
-                [
-                    data_var1 == data_var2
-                    for (data_var1, data_var2) in zip(
-                        result.data_vars, expected.data_vars
-                    )
-                ]
-            )
+    with open_dataset(expected_url) as expected, NamedTemporaryFile(
+        suffix=".nc", dir=tmpdir
+    ) as expected_file:
+        expected.to_netcdf(expected_file.name)
+        assert nc_data == expected_file.read()
 
 
 @pytest.mark.online
@@ -163,14 +145,14 @@ def test_nc_request_no_targets(filepath, client):
     ],
 )
 def test_metadata_requests(filepath, expected, client):
-    with NamedTemporaryFile(dir=tmpdir) as outfile:
-        basename = os.path.basename(outfile.name)
-        input_url = f"/data/?filepath={filepath}&outfile={basename}"
-        client.get(input_url)
-        if filepath.endswith(".das"):
-            assert expected in open(outfile.name).read().rstrip("\n")
-        else:
-            assert open(outfile.name).read().rstrip("\n") == expected
+    basename = os.path.basename(filepath)
+    input_url = f"/data/?filepath={filepath}&outfile={basename}"
+    data = client.get(input_url).data
+    data = data.decode("UTF-8").rstrip("\n")
+    if filepath.endswith(".das"):
+        assert expected in data
+    else:
+        assert data == expected
 
 
 @pytest.mark.online
@@ -201,8 +183,7 @@ lat[4]
     ],
 )
 def test_metadata_requests_with_targets(filepath, targets, expected, client):
-    with NamedTemporaryFile(dir=tmpdir) as outfile:
-        basename = os.path.basename(outfile.name)
-        input_url = f"/data/?filepath={filepath}&targets={targets}&outfile={basename}"
-        client.get(input_url)
-        assert open(outfile.name).read().rstrip("\n") == expected
+    basename = os.path.basename(filepath)
+    input_url = f"/data/?filepath={filepath}&targets={targets}&outfile={basename}"
+    data = client.get(input_url).data
+    assert data.decode("UTF-8").rstrip("\n") == expected

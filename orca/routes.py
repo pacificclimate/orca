@@ -40,8 +40,12 @@ def orc_route():
     else:
         outpath = orc(filepath, targets, thredds_base, outdir, outfile, log_level)
 
-    return send_file(
+    resp = send_file(
         outpath,
         as_attachment=True,
         download_name=get_filename_from_path(outpath),
     )
+    os.remove(
+        outpath
+    )  # Remove the file from the orca container after it's sent to the user
+    return resp
