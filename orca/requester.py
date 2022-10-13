@@ -80,6 +80,25 @@ def fill_target_bounds(dataset, targets):
                 target += sizes
             target_list[i] = target
 
+        elif ":]" in target:  # At least one variable has unspecified end bound
+            if target_var in dims:
+                target = target.replace(":]", f":{dims[target_var] - 1}]")
+            else:
+                target_bounds = "[" + target.split("[", 1)[1]
+                target_bounds = target_bounds.replace("][", "],[")
+                target_bound_list = target_bounds.split(",")
+
+                # Add end bounds where needed
+                for (j, end) in enumerate(data_vars[target_var].sizes.values()):
+                    if ":]" in target_bound_list[j]:
+                        target_bound_list[j] = target_bound_list[j].replace(
+                            ":]", f":{end - 1}]"
+                        )
+
+                target_bounds = "".join(target_bound_list)
+                target = target_var + target_bounds
+            target_list[i] = target
+
         elif "[]" in target:  # At least one variable has unspecified bounds
             if target_var in dims:
                 target = target.replace("[]", f"[0:{dims[target_var] - 1}]")
