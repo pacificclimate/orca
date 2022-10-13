@@ -80,7 +80,7 @@ def fill_target_bounds(dataset, targets):
                 target += sizes
             target_list[i] = target
 
-        elif ":]" in target:  # At least one variable has unspecified end bound
+        if ":]" in target:  # At least one variable has unspecified end bound
             if target_var in dims:
                 target = target.replace(":]", f":{dims[target_var] - 1}]")
             else:
@@ -99,7 +99,7 @@ def fill_target_bounds(dataset, targets):
                 target = target_var + target_bounds
             target_list[i] = target
 
-        elif "[]" in target:  # At least one variable has unspecified bounds
+        if "[]" in target:  # At least one variable has unspecified bounds
             if target_var in dims:
                 target = target.replace("[]", f"[0:{dims[target_var] - 1}]")
             else:

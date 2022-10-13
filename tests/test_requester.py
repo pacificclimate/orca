@@ -121,7 +121,7 @@ def test_fill_target_bounds_online(filepath, targets, expected):
             "lon[0:3],lat[0:3],time[0:50]",
         ),
         (
-            "time[0:2:],tasmin[0:2:][0:3][0:3]",
+            "time[0:2:],tasmin[0:2:][][]",
             "time[0:2:11],tasmin[0:2:11][0:3][0:3]",
         ),
         (
