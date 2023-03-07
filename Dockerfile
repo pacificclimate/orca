@@ -11,7 +11,7 @@ RUN apt-get update && \
 COPY . /app
 WORKDIR /app
 
-RUN pip install -U pipenv && \
+RUN pip install pipenv==2022.10.25 && \
     pipenv install 
 
 COPY . /app
