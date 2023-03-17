@@ -154,7 +154,7 @@ def bisect_request(url, threshold=5e8):
     to pass through the threshold.
     """
     dataset = open_dataset(url)
-    bytes = dataset.nbytes
+    bytes = dataset.nbytes / 2
 
     if bytes < threshold:
         logger.debug(f"Request under threshold: {round(bytes * 10**-6)}/500 mb")
