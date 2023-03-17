@@ -17,4 +17,4 @@ RUN pip install pipenv==2022.10.25 && \
 COPY . /app
 
 EXPOSE 5000
-CMD ["pipenv", "run", "gunicorn", "--timeout", "0", "--bind=0.0.0.0:5000", "orca:create_app()"]
+CMD ["pipenv", "run", "gunicorn", "--timeout", "600", "--bind=0.0.0.0:5000", "orca:create_app()"]
