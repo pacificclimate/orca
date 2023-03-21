@@ -2,8 +2,9 @@
 
 from flask import Blueprint, request, send_file
 from urllib.parse import unquote
+from xarray import open_dataset
 from orca.compiler import orc
-from orca.requester import to_file
+from orca.requester import fill_target_bounds, to_file
 from orca.utils import get_filename_from_path
 import os
 
@@ -33,6 +34,12 @@ def orc_route():
 
     if not filepath.endswith("nc"):  # .dds, .dds, or .ascii request
         if targets:
+            if (
+                "[]" in targets
+            ):  # Unspecified bounds for downloading data in ascii format
+                nc_path = filepath[: filepath.rfind(".")]
+                dataset = open_dataset(f"{thredds_base}{nc_path}")
+                targets = fill_target_bounds(dataset, targets)
             url = f"{thredds_base}{filepath}?{targets}"
         else:
             url = f"{thredds_base}{filepath}"
