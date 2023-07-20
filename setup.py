@@ -6,7 +6,7 @@ setup(
     name="orca",
     version=".".join(str(d) for d in __version__),
     description="OPeNDAP Request Compiler Application",
-    install_requires=["dask[dataframe]", "Flask", "netCDF4", "requests", "xarray"],
+    install_requires=["dask[dataframe]", "Flask", "requests", "xarray"],
     packages=["orca"],
     package_data={"orca": ["tests/data/*.nc"]},
     include_package_data=True,
