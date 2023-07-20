@@ -53,9 +53,9 @@ def orc_route():
                 targets,
                 thredds_base,
                 threshold,
-                log_level,
                 outdir="",
                 outfile=outpath.name,
+                log_level=log_level,
             )
 
         resp = send_file(
