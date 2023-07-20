@@ -29,8 +29,7 @@ def file_from_opendap(url, threshold, outdir, outfile):
         dataset = open_dataset(urls[0])
     else:
         dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
-    outpath = to_file(dataset, outdir, outfile)
-    return outpath
+    to_file(dataset, outdir, outfile)
 
 
 def to_file(dataset, outdir, outfile="", nc=True):
@@ -49,8 +48,6 @@ def to_file(dataset, outdir, outfile="", nc=True):
         f.write(requests.get(dataset).content)
         f.close()
     logger.debug("File write complete")
-
-    return outpath
 
 
 def build_opendap_url(thredds_base, filepath, targets):

@@ -43,9 +43,9 @@ thredds_base = (
 def test_orc(filepath, targets, expected_targets):
     expected_url = f"{thredds_base}{filepath}?{expected_targets}"
     with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
-        outpath = compiler.orc(filepath, targets, outdir="", outfile=outfile.name)
+        compiler.orc(filepath, targets, outdir="", outfile=outfile.name)
 
-        with open_dataset(outpath) as result, open_dataset(expected_url) as expected:
+        with open_dataset(outfile.name) as result, open_dataset(expected_url) as expected:
             assert result.dims == expected.dims
             assert all(
                 [
@@ -68,9 +68,9 @@ def test_orc(filepath, targets, expected_targets):
 def test_orc_no_targets(filepath):
     expected_url = f"{thredds_base}{filepath}"
     with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
-        outpath = compiler.orc(filepath, outdir="", outfile=outfile.name)
+        compiler.orc(filepath, outdir="", outfile=outfile.name)
 
-        with open_dataset(outpath) as result, open_dataset(expected_url) as expected:
+        with open_dataset(outfile.name) as result, open_dataset(expected_url) as expected:
             assert result.dims == expected.dims
             assert all(
                 [
