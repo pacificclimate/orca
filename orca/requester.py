@@ -16,8 +16,12 @@ def file_from_opendap(url, threshold, outdir, outfile):
     input_dataset = open_dataset(url)
     nbytes = input_dataset.nbytes / 2
     data_vars = input_dataset.data_vars
-    data_vars_with_time = [] # Only use data variables with a time component for pivoting in bisect request.
-    time_indices = [] # Position of time component for each data variable. Used as pivot for bisecting request.
+    data_vars_with_time = (
+        []
+    )  # Only use data variables with a time component for pivoting in bisect request.
+    time_indices = (
+        []
+    )  # Position of time component for each data variable. Used as pivot for bisecting request.
     for data_var in data_vars:
         if "time" in input_dataset[data_var].sizes:
             data_vars_with_time.append(data_var)
@@ -207,4 +211,6 @@ def bisect_request(url, threshold, nbytes, data_vars, time_indices):
         except TypeError:  # time variable was not requested
             pass
 
-        return bisect_request(front, threshold, nbytes / 2, data_vars, time_indices) + bisect_request(back, threshold, nbytes / 2, data_vars, time_indices)
+        return bisect_request(
+            front, threshold, nbytes / 2, data_vars, time_indices
+        ) + bisect_request(back, threshold, nbytes / 2, data_vars, time_indices)

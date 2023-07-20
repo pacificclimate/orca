@@ -45,7 +45,9 @@ def test_orc(filepath, targets, expected_targets):
     with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
         compiler.orc(filepath, targets, outdir="", outfile=outfile.name)
 
-        with open_dataset(outfile.name) as result, open_dataset(expected_url) as expected:
+        with open_dataset(outfile.name) as result, open_dataset(
+            expected_url
+        ) as expected:
             assert result.dims == expected.dims
             assert all(
                 [
@@ -70,7 +72,9 @@ def test_orc_no_targets(filepath):
     with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
         compiler.orc(filepath, outdir="", outfile=outfile.name)
 
-        with open_dataset(outfile.name) as result, open_dataset(expected_url) as expected:
+        with open_dataset(outfile.name) as result, open_dataset(
+            expected_url
+        ) as expected:
             assert result.dims == expected.dims
             assert all(
                 [

@@ -48,7 +48,15 @@ def orc_route():
                 url = f"{thredds_base}{filepath}"
             to_file(url, outdir="", outfile=outpath.name, nc=False)
         else:
-            orc(filepath, targets, thredds_base, threshold, log_level, outdir="", outfile=outpath.name)
+            orc(
+                filepath,
+                targets,
+                thredds_base,
+                threshold,
+                log_level,
+                outdir="",
+                outfile=outpath.name,
+            )
 
         resp = send_file(
             outpath.name,
