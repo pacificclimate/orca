@@ -20,6 +20,7 @@ def orc_route():
         "thredds_base",
         "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     )
+    threshold = request.args.get("threshold", 5e8)
     outdir = request.args.get("outdir", os.getenv("TMPDIR", default="/tmp/"))
     outfile = request.args.get("outfile", "")
     log_level = request.args.get("log_level", "INFO")

@@ -37,7 +37,7 @@ thredds_base = (
 def test_file_from_opendap(filepath, targets):
     url = f"{thredds_base}{filepath}?{targets}"
     with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
-        file_from_opendap(url, outdir="", outfile=outfile.name)
+        file_from_opendap(url, threshold=5e8, outdir="", outfile=outfile.name)
         with open_dataset(outfile.name) as result, open_dataset(url) as expected:
             assert result.dims == expected.dims
             assert all(
@@ -202,22 +202,25 @@ def test_build_all_targets_local(filepath, expected):
             1,
         ),
         (
-            "tasmin[0:1:7500][0:1:91][0:1:206]",
+            "tasmin[0:1:15000][0:1:91][0:1:206]",
             2,
         ),
         (
-            "tasmin[0:1:15000][0:1:91][0:1:206]",
-            4,
-        ),
-        (
             "tasmin[0:1:30000][0:1:91][0:1:206]",
-            8,
+            4,
         ),
     ],
 )
 def test_bisect_request(filepath, targets, expected):
     url = f"{thredds_base}{filepath}?{targets}"
-    urls = bisect_request(url)
+    input_dataset = open_dataset(url)
+    threshold = 5e8
+    nbytes = input_dataset.nbytes / 2
+    data_vars = input_dataset.data_vars
+    time_indices = []
+    for data_var in data_vars:
+        time_indices.append(list(input_dataset[data_var].sizes).index("time"))
+    urls = bisect_request(url, threshold, nbytes, data_vars, time_indices)
     assert len(urls) == expected
 
 
@@ -234,36 +237,49 @@ def test_bisect_request(filepath, targets, expected):
         (
             "time[0:1:7500],tasmin[0:1:7500][0:1:91][0:1:206]",
             [
-                "time[0:1:3750],tasmin[0:1:3750][0:1:91][0:1:206]",
-                "time[3751:1:7500],tasmin[3751:1:7500][0:1:91][0:1:206]",
+                "time[0:1:7500],tasmin[0:1:7500][0:1:91][0:1:206]",
             ],
         ),
         (
             "time[0:1:15000],tasmin[0:1:15000][0:1:91][0:1:206]",
             [
-                "time[0:1:3750],tasmin[0:1:3750][0:1:91][0:1:206]",
-                "time[3751:1:7500],tasmin[3751:1:7500][0:1:91][0:1:206]",
-                "time[7501:1:11250],tasmin[7501:1:11250][0:1:91][0:1:206]",
-                "time[11251:1:15000],tasmin[11251:1:15000][0:1:91][0:1:206]",
+                "time[0:1:7500],tasmin[0:1:7500][0:1:91][0:1:206]",
+                "time[7501:1:15000],tasmin[7501:1:15000][0:1:91][0:1:206]",
             ],
         ),
         (
             "time[0:1:30000],tasmin[0:1:30000][0:1:91][0:1:206]",
             [
-                "time[0:1:3750],tasmin[0:1:3750][0:1:91][0:1:206]",
-                "time[3751:1:7500],tasmin[3751:1:7500][0:1:91][0:1:206]",
-                "time[7501:1:11250],tasmin[7501:1:11250][0:1:91][0:1:206]",
-                "time[11251:1:15000],tasmin[11251:1:15000][0:1:91][0:1:206]",
-                "time[15001:1:18750],tasmin[15001:1:18750][0:1:91][0:1:206]",
-                "time[18751:1:22500],tasmin[18751:1:22500][0:1:91][0:1:206]",
-                "time[22501:1:26250],tasmin[22501:1:26250][0:1:91][0:1:206]",
-                "time[26251:1:30000],tasmin[26251:1:30000][0:1:91][0:1:206]",
+                "time[0:1:7500],tasmin[0:1:7500][0:1:91][0:1:206]",
+                "time[7501:1:15000],tasmin[7501:1:15000][0:1:91][0:1:206]",
+                "time[15001:1:22500],tasmin[15001:1:22500][0:1:91][0:1:206]",
+                "time[22501:1:30000],tasmin[22501:1:30000][0:1:91][0:1:206]",
+            ],
+        ),
+        (
+            "time[0:1:50000],tasmin[0:1:50000][0:1:100][0:1:300]",
+            [
+                "time[0:1:6250],tasmin[0:1:6250][0:1:100][0:1:300]",
+                "time[6251:1:12500],tasmin[6251:1:12500][0:1:100][0:1:300]",
+                "time[12501:1:18750],tasmin[12501:1:18750][0:1:100][0:1:300]",
+                "time[18751:1:25000],tasmin[18751:1:25000][0:1:100][0:1:300]",
+                "time[25001:1:31250],tasmin[25001:1:31250][0:1:100][0:1:300]",
+                "time[31251:1:37500],tasmin[31251:1:37500][0:1:100][0:1:300]",
+                "time[37501:1:43750],tasmin[37501:1:43750][0:1:100][0:1:300]",
+                "time[43751:1:50000],tasmin[43751:1:50000][0:1:100][0:1:300]",
             ],
         ),
     ],
 )
 def test_bisect_request_with_time(filepath, targets, expected):
     url = f"{thredds_base}{filepath}?{targets}"
-    urls = bisect_request(url)
+    input_dataset = open_dataset(url)
+    threshold = 5e8
+    nbytes = input_dataset.nbytes / 2
+    data_vars = input_dataset.data_vars
+    time_indices = []
+    for data_var in data_vars:
+        time_indices.append(list(input_dataset[data_var].sizes).index("time"))
+    urls = bisect_request(url, threshold, nbytes, data_vars, time_indices)
     expected_urls = [f"{thredds_base}{filepath}?{e}" for e in expected]
     assert urls == expected_urls

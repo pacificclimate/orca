@@ -11,9 +11,18 @@ from datetime import datetime
 logger = logging.getLogger("scripts")
 
 
-def file_from_opendap(url, outdir, outfile):
+def file_from_opendap(url, threshold, outdir, outfile):
     """Write to file from OPeNDAP link"""
-    urls = bisect_request(url)
+    input_dataset = open_dataset(url)
+    nbytes = input_dataset.nbytes / 2
+    data_vars = input_dataset.data_vars
+    data_vars_with_time = [] # Only use data variables with a time component for pivoting in bisect request.
+    time_indices = [] # Position of time component for each data variable. Used as pivot for bisecting request.
+    for data_var in data_vars:
+        if "time" in input_dataset[data_var].sizes:
+            data_vars_with_time.append(data_var)
+            time_indices.append(list(input_dataset[data_var].sizes).index("time"))
+    urls = bisect_request(url, threshold, nbytes, data_vars_with_time, time_indices)
 
     logger.debug(f"Downloading from {len(urls)} URL(s): {urls}")
     if len(urls) == 1:
@@ -140,7 +149,7 @@ def build_all_targets(dataset):
     return targets
 
 
-def bisect_request(url, threshold=5e8):
+def bisect_request(url, threshold, nbytes, data_vars, time_indices):
     """Recursively bisect request until each piece is small enough for THREDDS
 
     OPeNDAP requests have a limit of 500MB, because of that we want to ensure
@@ -153,24 +162,20 @@ def bisect_request(url, threshold=5e8):
     will maintain the size reported to ensure that the split is small enough
     to pass through the threshold.
     """
-    dataset = open_dataset(url)
-    bytes = dataset.nbytes / 2
-
-    if bytes < threshold:
-        logger.debug(f"Request under threshold: {round(bytes * 10**-6)}/500 mb")
+    if nbytes < threshold:
+        logger.debug(f"Request under threshold: {round(nbytes * 10**-6)}/500 mb")
         return [url]
 
     else:
         logger.debug(
-            f"Splitting, request over threshold: {round(bytes * 10**-6)}/500 mb"
+            f"Splitting, request over threshold: {round(nbytes * 10**-6)}/500 mb"
         )
 
         # Bisect data variables
         front = url
         back = url
         bounds_format = r"(\[(\d+)(:\d+){0,1}:(\d+)\])"
-        for data_var in dataset.data_vars:
-            time_index = list(dataset[data_var].sizes).index("time")
+        for (data_var, time_index) in zip(data_vars, time_indices):
             start_end_format = re.compile(
                 rf"{data_var}{bounds_format}{{{time_index}}}{bounds_format}"
             )  # Last instance of bounds_format is the time component
@@ -205,4 +210,4 @@ def bisect_request(url, threshold=5e8):
         except TypeError:  # time variable was not requested
             pass
 
-        return bisect_request(front) + bisect_request(back)
+        return bisect_request(front, threshold, nbytes / 2, data_vars, time_indices) + bisect_request(back, threshold, nbytes / 2, data_vars, time_indices)
