@@ -38,6 +38,7 @@ jobs:
       run: |
         mv Pipfile.lock do-not-use
         pipenv install --python ${{ matrix.python-version }} --dev
+        pipenv run pip install -e .
     
     - name: Test with pytest (full)
       if: github.ref == 'refs/heads/master'
