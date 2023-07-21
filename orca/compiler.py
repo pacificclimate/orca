@@ -2,13 +2,15 @@
 
 from orca.requester import build_opendap_url, file_from_opendap
 from orca.utils import setup_logging
+import os
 
 
 def orc(
     filepath,
-    targets,
+    targets=None,
     thredds_base="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
-    outdir="/tmp/",
+    threshold=5e8,
+    outdir=os.getenv("TMPDIR", default="/tmp/"),
     outfile="",
     log_level="INFO",
 ):
@@ -25,8 +27,8 @@ def orc(
     logger.debug(f"Initial OPeNDAP URL: {opendap_url}")
 
     logger.info("Downloading data from OPeNDAP")
-    outpath = file_from_opendap(opendap_url, outdir, outfile)
-    logger.debug(f"Result avaialble at {outpath}")
+    file_from_opendap(opendap_url, threshold, outdir, outfile)
+    outpath = outdir + outfile
+    logger.debug(f"Result available at {outpath}")
 
     logger.info("Complete")
-    return outpath

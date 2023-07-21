@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.10-slim
 
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
@@ -11,7 +11,7 @@ RUN apt-get update && \
 COPY . /app
 WORKDIR /app
 
-RUN pip install -U pipenv && \
+RUN pip install pipenv==2022.10.25 && \
     pipenv install 
 
 COPY . /app
