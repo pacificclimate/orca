@@ -24,7 +24,7 @@ packages = [
     {include = "orca"},
 ]
 include = [
-    "orca/tests/data/*.nc",
+    "tests/data/*.nc",
 ]
 
 [tool.poetry.dependencies]
