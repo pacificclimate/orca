@@ -48,7 +48,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-process = "scripts.process:runme"
+process = "scripts.process:process"
 
 [tool.pytest.ini_options]
 markers = [
