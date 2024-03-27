@@ -9,8 +9,22 @@ authors = [
 ]
 license = "GPL3"
 readme = "README.md"
+homepage = "http://www.pacificclimate.org/"
+repository = "https://github.com/pacificclimate/orca"
+classifiers=[
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+packages = [
+    {include = "orca"},
+]
 include = [
-        "tests/data/*.nc"
+    "orca/tests/data/*.nc",
 ]
 
 [tool.poetry.dependencies]

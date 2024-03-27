@@ -9,12 +9,12 @@ make
 ```
 This will install the dependencies, run the tests and install the `pre-commit` hook for formatting. Once that is all installed you are ready to code!
 
-`pipenv` is our tool of choice for handling packages and virtual environments. Here are some commands you may want to use:
+`poetry` is our tool of choice for handling packages and virtual environments. Here are some commands you may want to use:
 ```
-pipenv install [package]    # install a package into the environment
-pipenv uninstall [package]  # uninstall a package from the environment
-pipenv run [command]        # run a command in the virtual environment
-pipenv lock                 # lock the current environment by updating `Pipfile.lock`
+poetry add [package]    # install a package into the environment
+poetry remove [package]  # uninstall a package from the environment
+poetry run [command]        # run a command in the virtual environment
+poetry lock                 # lock the current environment by updating `poetry.lock`
 ```
 Other commands can be found in the [docs](https://pipenv.pypa.io/en/latest/).
 
