@@ -52,5 +52,6 @@ process = "scripts.process:runme"
 
 [tool.pytest.ini_options]
 markers = [
+    "online: marks tests that use online resources (deselect with '-m \"not online\"')",
     "slow: marks tests that are slow (deselect with '-m \"not slow\"')",
 ]
