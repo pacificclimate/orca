@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 RUN apt-get update && \
     apt-get install -y gcc \
-      curl
+      curl \
       libhdf5-serial-dev \
       netcdf-bin \
       libnetcdf-dev
