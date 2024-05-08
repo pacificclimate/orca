@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.9", "3.10", "3.11"]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,15 +29,8 @@ jobs:
         key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
 
     - name: Install dependencies if changed
-      if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' && matrix.python-version == '3.10' }}
+      if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
       run: |
-        poetry install --with=dev
-        poetry run pip install -e .
-
-    - name: Re-install dependencies if alternative python version
-      if: ${{ matrix.python-version != '3.10' }}
-      run: |
-        mv poetry.lock do-not-use
         poetry env use python${{ matrix.python-version }}
         poetry install --with=dev
         poetry run pip install -e .
