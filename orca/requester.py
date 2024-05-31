@@ -32,8 +32,9 @@ def file_from_opendap(url, threshold, outdir, outfile):
     if len(urls) == 1:
         dataset = open_dataset(urls[0])
     else:
-        dataset = open_mfdataset(urls, combine="nested", concat_dim="time")
-    to_file(dataset, outdir, outfile)
+        dataset = open_mfdataset(urls, combine="nested", concat_dim="time", chunks=len(urls))
+    outpath = to_file(dataset, outdir, outfile)
+    return outpath
 
 
 def to_file(dataset, outdir, outfile="", nc=True):
