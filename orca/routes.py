@@ -19,7 +19,7 @@ def orc_route():
     targets = request.args.get("targets", None)
     thredds_base = request.args.get(
         "thredds_base",
-        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+        "https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     )
     threshold = request.args.get("threshold", 5e8)
     outdir = request.args.get("outdir", os.getenv("TMPDIR", default="/tmp/"))
