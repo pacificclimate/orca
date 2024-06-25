@@ -33,7 +33,7 @@ def file_from_opendap(url, threshold, outdir, outfile):
         dataset = open_dataset(urls[0])
     else:
         dataset = open_mfdataset(
-            urls, combine="nested", concat_dim="time", chunks=10*len(urls)
+            urls, combine="nested", concat_dim="time", chunks=10 * len(urls)
         )
     outpath = to_file(dataset, outdir, outfile)
     return outpath
