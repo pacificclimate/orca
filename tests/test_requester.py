@@ -15,8 +15,9 @@ from orca.requester import (
 )
 
 tmpdir = os.getenv("TMPDIR", default="/tmp")
-thredds_base = (
-    "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets"
+thredds_base = os.getenv(
+    "THREDDS_BASE",
+    default="https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
 )
 
 

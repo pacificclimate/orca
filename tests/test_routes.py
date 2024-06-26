@@ -5,10 +5,11 @@ from xarray import open_dataset
 
 from orca import create_app
 
-thredds_base = (
-    "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets"
-)
 tmpdir = os.getenv("TMPDIR", default="/tmp")
+thredds_base = os.getenv(
+    "THREDDS_BASE",
+    default="https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+)
 
 
 @pytest.fixture

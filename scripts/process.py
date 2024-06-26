@@ -16,7 +16,10 @@ from orca.requester import to_file
     "-b",
     "--thredds-base",
     help="Base path for all OPeNDAP links",
-    default="https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+    default=os.getenv(
+        "THREDDS_BASE",
+        default="https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+    ),
 )
 @click.option(
     "-o",
