@@ -90,8 +90,8 @@ docker-compose down
 The url will be in the same format but will have a different prefix:
 ```
 # Generic example
-http://docker-dev03.pcic.uvic.ca:30333/data/?filepath=[filepath]&targets=[variable][time_start:time_end][lat_start:lat_end][lon_start:lon_end]
+https://services.pacificclimate.org/dev/orca/?filepath=[filepath]&targets=[variable][time_start:time_end][lat_start:lat_end][lon_start:lon_end]
 
 # Example
-http://docker-dev03.pcic.uvic.ca:30333/data/?filepath=/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc&targets=tasmin[0:150][0:91][0:206]
+https://services.pacificclimate.org/dev/orca/?filepath=/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc&targets=tasmin[0:150][0:91][0:206]
 ```
