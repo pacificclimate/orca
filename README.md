@@ -102,3 +102,16 @@ There is a `process.py` script in the `scripts/` subdirectory for users who woul
 # Example
 python scripts/process.py -p /storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc -t tasmin[0:150][0:91][0:206] -f tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc
 ```
+
+## Releasing
+To create a versioned release:
+
+1. Increment the `version` in `pyproject.toml` and the image tag in `docker-compose.yaml`
+2. Summarize the changes from the last release in `NEWS.md`
+3. Commit these changes, then tag the release:
+```
+git add pyproject.toml docker-compose.yaml NEWS.md
+git commit -m "Bump to version x.x.x"
+git tag -a -m "x.x.x" x.x.x
+git push --follow-tags
+```
