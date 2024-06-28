@@ -23,7 +23,7 @@ def orc_route():
     )
     threshold = request.args.get("threshold", 5e8)
     outdir = request.args.get("outdir", os.getenv("TMPDIR", default="/tmp/"))
-    outfile = request.args.get("outfile", "orca-output.nc")
+    outfile = request.args.get("outfile", os.path.basename(filepath))
     log_level = request.args.get("log_level", "INFO")
 
     # Flask will gobble the leading / and '+' signs for the storage path, add them back
