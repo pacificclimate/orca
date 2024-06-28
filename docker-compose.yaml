@@ -1,4 +1,3 @@
-version: '3.4'
 services:
   orca:
     image: pcic/orca:i34-metadata-requests
