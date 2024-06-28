@@ -104,7 +104,6 @@ def test_fill_target_bounds_online(filepath, targets, expected):
     assert set(target_list) == set(expected_list)
 
 
-@pytest.mark.online
 @pytest.mark.parametrize(
     ("filepath"),
     [
