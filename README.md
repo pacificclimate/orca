@@ -95,3 +95,10 @@ https://services.pacificclimate.org/dev/orca/?filepath=[filepath]&targets=[varia
 # Example
 https://services.pacificclimate.org/dev/orca/?filepath=/storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc&targets=tasmin[0:150][0:91][0:206]
 ```
+
+## Script
+There is a `process.py` script in the `scripts/` subdirectory for users who would like to run ORCA through the command line. It is run with the following syntax:
+```
+# Example
+python scripts/process.py -p /storage/data/climate/downscale/BCCAQ2/bccaqv2_with_metadata/tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc -t tasmin[0:150][0:91][0:206] -f tasmin_day_BCCAQv2+ANUSPLIN300_inmcm4_historical+rcp85_r1i1p1_19500101-21001231.nc
+```

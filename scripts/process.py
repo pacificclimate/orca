@@ -22,6 +22,12 @@ from orca.requester import to_file
     ),
 )
 @click.option(
+    "-h",
+    "--threshold",
+    help="Byte size limit of requests to THREDDS",
+    default=5e8,
+)
+@click.option(
     "-o",
     "--outdir",
     help="Desired dir to store generated output",
@@ -37,7 +43,7 @@ from orca.requester import to_file
         ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], case_sensitive=False
     ),
 )
-def process(filepath, targets, thredds_base, outdir, outfile, log_level):
+def process(filepath, targets, thredds_base, threshold, outdir, outfile, log_level):
     """CLI for orca"""
     if not filepath.endswith("nc"):  # .dds, .dds, or .ascii request
         if targets:
@@ -46,7 +52,7 @@ def process(filepath, targets, thredds_base, outdir, outfile, log_level):
             url = f"{thredds_base}{filepath}"
         to_file(url, outdir, outfile, nc=False)
     else:
-        orc(filepath, targets, thredds_base, outdir, outfile, log_level)
+        orc(filepath, targets, thredds_base, threshold, outdir, outfile, log_level)
 
 
 if __name__ == "__main__":
