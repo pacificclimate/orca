@@ -1,13 +1,15 @@
-version: '3.0'
 services:
   orca:
-    image: pcic/orca:2.0.0
+    image: pcic/orca:i34-metadata-requests
     container_name: orca
+    environment:
+        - TMPDIR=/scratch
     ports:
       - "30333:5000"
-
     tmpfs:
       - /tmp:size=5G
+    volumes:
+      - /scratch:/scratch
 
 networks:
   default:

@@ -1,9 +1,8 @@
-FROM python:3.8-slim
-
-ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
+FROM python:3.10-slim
 
 RUN apt-get update && \
     apt-get install -y gcc \
+      curl \
       libhdf5-serial-dev \
       netcdf-bin \
       libnetcdf-dev
@@ -11,10 +10,11 @@ RUN apt-get update && \
 COPY . /app
 WORKDIR /app
 
-RUN pip install -U pipenv && \
-    pipenv install 
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH=/root/.local/bin:$PATH
+RUN poetry install
 
 COPY . /app
 
 EXPOSE 5000
-CMD ["pipenv", "run", "gunicorn", "--timeout", "600", "--bind=0.0.0.0:5000", "orca:create_app()"]
+CMD ["poetry", "run", "gunicorn", "--timeout", "86400", "--workers=10", "--bind=0.0.0.0:5000", "orca:create_app()"]

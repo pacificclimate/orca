@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "orca"
+version = "2.0.0"
+description = "OPenDAP Request Compiler Application"
+authors = [
+    "Nikola Rados",
+    "Cairo Sanders",
+    "Eric Yvorchuk <eyvorchuk@uvic.ca>"
+]
+license = "GPL3"
+readme = "README.md"
+homepage = "http://www.pacificclimate.org/"
+repository = "https://github.com/pacificclimate/orca"
+classifiers=[
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+packages = [
+    {include = "orca"},
+]
+include = [
+    "tests/data/*.nc",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+click = "^8.1.7"
+xarray = "^2024.2.0"
+Flask = "^3.0.2"
+netCDF4 = "^1.6.5"
+gunicorn = "^21.2.0"
+requests = "^2.31.0"
+dask = {extras = ["dataframe"], version = "^2024.3.1"}
+
+[tool.poetry.group.dev.dependencies]
+black = "22.3.0"
+pytest = "^8.1.1"
+pre-commit = "^3.7.0"
+snakeviz = "^2.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+process = "scripts.process:process"
+
+[tool.pytest.ini_options]
+markers = [
+    "online: marks tests that use online resources (deselect with '-m \"not online\"')",
+    "slow: marks tests that are slow (deselect with '-m \"not slow\"')",
+]
