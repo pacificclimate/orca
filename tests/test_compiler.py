@@ -49,7 +49,7 @@ def test_orc(filepath, targets, expected_targets):
         with open_dataset(outfile.name) as result, open_dataset(
             expected_url
         ) as expected:
-            assert result.dims == expected.dims
+            assert result.sizes == expected.sizes
             assert all(
                 [
                     data_var1 == data_var2
@@ -76,7 +76,7 @@ def test_orc_no_targets(filepath):
         with open_dataset(outfile.name) as result, open_dataset(
             expected_url
         ) as expected:
-            assert result.dims == expected.dims
+            assert result.sizes == expected.sizes
             assert all(
                 [
                     data_var1 == data_var2

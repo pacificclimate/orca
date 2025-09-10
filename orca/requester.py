@@ -76,7 +76,7 @@ def build_opendap_url(thredds_base, filepath, targets):
 
 def fill_target_bounds(dataset, targets):
     """Fill in bounds for variables in which they are unspecified"""
-    dims = dataset.dims
+    dims = dataset.sizes
     data_vars = dataset.data_vars
 
     target_list = targets.split(",")
@@ -137,7 +137,7 @@ def build_all_targets(dataset):
     """Obtain all variable names and associated bounds so that all variables are
     retained when downloading an entire netCDF file. This also ensures the time bounds
     for the data variables and time coordinate are readily obtainable when bisecting the requests if needed."""
-    dims = dataset.dims
+    dims = dataset.sizes
     targets = ",".join(
         [f"{dim}[0:{end - 1}]" for (dim, end) in dims.items() if dim != "bnds"]
     )

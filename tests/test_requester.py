@@ -1,7 +1,7 @@
 import pytest
 import re
 import os
-from pkg_resources import resource_filename
+from importlib.resources import files
 from math import ceil
 from tempfile import NamedTemporaryFile
 from xarray import open_dataset
@@ -40,7 +40,7 @@ def test_file_from_opendap(filepath, targets):
     with NamedTemporaryFile(suffix=".nc", dir=tmpdir) as outfile:
         file_from_opendap(url, threshold=5e8, outdir="", outfile=outfile.name)
         with open_dataset(outfile.name) as result, open_dataset(url) as expected:
-            assert result.dims == expected.dims
+            assert result.sizes == expected.sizes
             assert all(
                 [
                     data_var1 == data_var2
@@ -107,9 +107,8 @@ def test_fill_target_bounds_online(filepath, targets, expected):
 @pytest.mark.parametrize(
     ("filepath"),
     [
-        resource_filename(
-            __name__,
-            "data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
+        files("tests").joinpath(
+            "data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc"
         ),
     ],
 )
@@ -165,15 +164,15 @@ def test_build_all_targets_online(filepath, expected):
     ("filepath", "expected"),
     [
         (
-            resource_filename(__name__, "data/tiny_hydromodel_gcm_climos.nc"),
+            files("tests").joinpath("data", "tiny_hydromodel_gcm_climos.nc"),
             "lon[0:1],lat[0:1],depth[0:2],time[0:16],climatology_bnds[0:16][0:1],"
             "RUNOFF[0:16][0:1][0:1],BASEFLOW[0:16][0:1][0:1],EVAP[0:16][0:1][0:1],"
             "GLAC_MBAL_BAND[0:16][0:2][0:1][0:1],GLAC_AREA_BAND[0:16][0:2][0:1][0:1],SWE_BAND[0:16][0:2][0:1][0:1]",
         ),
         (
-            resource_filename(
-                __name__,
-                "data/tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
+            files("tests").joinpath(
+                "data",
+                "tasmin_mClim_BNU-ESM_historical_r1i1p1_19650101-19701230_test.nc",
             ),
             "lon[0:3],lon_bnds[0:3][0:1],lat[0:3],lat_bnds[0:3][0:1],time[0:11],climatology_bnds[0:11][0:1],tasmin[0:11][0:3][0:3]",
         ),
