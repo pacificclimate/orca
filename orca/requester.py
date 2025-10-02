@@ -45,16 +45,16 @@ def to_file(dataset, outdir, outfile="", nc=True):
         now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         outfile = f"orca-output-{now}"
 
-    outpath = outdir + outfile
+    outpath = os.path.join(outdir, outfile)
 
     logger.debug("Begin file write")
     if nc:
         dataset.to_netcdf(outpath)
     else:
-        f = open(outpath, "wb")
-        f.write(requests.get(dataset).content)
-        f.close()
+        with open(outpath, "wb") as f:
+            f.write(requests.get(dataset).content)
     logger.debug("File write complete")
+    return outpath
 
 
 def build_opendap_url(thredds_base, filepath, targets):

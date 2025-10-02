@@ -34,33 +34,36 @@ def orc_route():
     if targets:
         targets = unquote(targets)
 
-    with NamedTemporaryFile(dir=outdir) as outpath:
-        if not filepath.endswith("nc"):  # .dds, .dds, or .ascii request
-            if targets:
-                if (
-                    "[]" in targets
-                ):  # Unspecified bounds for downloading data in ascii format
-                    nc_path = filepath[: filepath.rfind(".")]
-                    dataset = open_dataset(f"{thredds_base}{nc_path}")
-                    targets = fill_target_bounds(dataset, targets)
-                url = f"{thredds_base}{filepath}?{targets}"
+    with NamedTemporaryFile(dir=outdir, delete=False) as outpath:
+        try:
+            if not filepath.endswith("nc"):  # .dds, .dds, or .ascii request
+                if targets:
+                    if (
+                        "[]" in targets
+                    ):  # Unspecified bounds for downloading data in ascii format
+                        nc_path = filepath[: filepath.rfind(".")]
+                        dataset = open_dataset(f"{thredds_base}{nc_path}")
+                        targets = fill_target_bounds(dataset, targets)
+                    url = f"{thredds_base}{filepath}?{targets}"
+                else:
+                    url = f"{thredds_base}{filepath}"
+                to_file(url, outdir="", outfile=outpath.name, nc=False)
             else:
-                url = f"{thredds_base}{filepath}"
-            to_file(url, outdir="", outfile=outpath.name, nc=False)
-        else:
-            orc(
-                filepath,
-                targets,
-                thredds_base,
-                threshold,
-                outdir="",
-                outfile=outpath.name,
-                log_level=log_level,
-            )
+                orc(
+                    filepath,
+                    targets,
+                    thredds_base,
+                    threshold,
+                    outdir="",
+                    outfile=outpath.name,
+                    log_level=log_level,
+                )
 
-        resp = send_file(
-            outpath.name,
-            as_attachment=True,
-            download_name=outfile,
-        )
+            resp = send_file(
+                outpath.name,
+                as_attachment=True,
+                download_name=outfile,
+            )
+        finally:
+            os.remove(outpath.name)
     return resp
