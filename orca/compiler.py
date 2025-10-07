@@ -15,7 +15,7 @@ def orc(
     threshold=5e8,
     outdir=os.getenv("TMPDIR", default="/tmp/"),
     outfile="",
-    log_level="INFO",
+    log_level=os.getenv("LOG_LEVEL", default="INFO"),
 ):
     """OPeNDAP Request Complier
 
