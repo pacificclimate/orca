@@ -49,9 +49,14 @@ def orc_route():
                 url = f"{thredds_base}{filepath}"
             to_file(url, outdir="", outfile=outpath.name, nc=False)
         else:
-            cProfile.run(
-                'orc(filepath, targets, thredds_base, threshold, outdir="", outfile=outpath.name, log_level=log_level)',
-                "profile.prof",
+            orc(
+                filepath,
+                targets,
+                thredds_base,
+                threshold,
+                outdir="",
+                outfile=outpath.name,
+                log_level=log_level,
             )
 
         resp = send_file(
