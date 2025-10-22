@@ -8,6 +8,7 @@ from orca.compiler import orc
 from orca.requester import fill_target_bounds, to_file
 from orca.utils import get_filename_from_path
 import os
+import cProfile
 
 data = Blueprint("data", __name__, url_prefix="/data")
 
@@ -48,14 +49,9 @@ def orc_route():
                 url = f"{thredds_base}{filepath}"
             to_file(url, outdir="", outfile=outpath.name, nc=False)
         else:
-            orc(
-                filepath,
-                targets,
-                thredds_base,
-                threshold,
-                outdir="",
-                outfile=outpath.name,
-                log_level=log_level,
+            cProfile.run(
+                'orc(filepath, targets, thredds_base, threshold, outdir="", outfile=outpath.name, log_level=log_level)',
+                "profile.prof",
             )
 
         resp = send_file(
