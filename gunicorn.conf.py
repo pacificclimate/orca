@@ -3,13 +3,15 @@ import cProfile
 
 profile = cProfile.Profile()
 
+print("gunicorn profiling configuration loaded")
+
 
 def pre_request(worker, req):
     print("enabling profiler for request")
     profile.enable()
 
 
-def post_request(worker, req):
+def post_request(worker, req, args*):
     print("disabling profiler for request")
     profile.disable()
 
