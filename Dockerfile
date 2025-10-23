@@ -16,5 +16,7 @@ RUN poetry install
 
 COPY . /app
 
+ECHO "Starting gunicorn with profiling"
+
 EXPOSE 5000
-CMD ["poetry", "run", "gunicorn", "--timeout", "86400", "--workers=10", "--bind=0.0.0.0:5000", "orca:create_app()"]
+CMD ["poetry", "run", "gunicorn", "-c", "/app/gunicorn.conf.py", "--timeout", "86400", "--workers=10", "--bind=0.0.0.0:5000", "orca:create_app()"]
