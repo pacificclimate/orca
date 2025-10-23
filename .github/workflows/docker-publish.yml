@@ -15,9 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Publish to Registry
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           username: ${{ secrets.pcicdevops_at_dockerhub_username }}
           password: ${{ secrets.pcicdevops_at_dockerhub_password }}
-          repository: pcic/orca
           tag_with_ref: true
