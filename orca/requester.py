@@ -14,7 +14,7 @@ logger = logging.getLogger("scripts")
 def file_from_opendap(url, threshold, outdir, outfile):
     """Write to file from OPeNDAP link"""
     input_dataset = open_dataset(url)
-    nbytes = input_dataset.nbytes / 2
+    nbytes = input_dataset.nbytes
     data_vars = input_dataset.data_vars
     data_vars_with_time = (
         []
@@ -161,10 +161,6 @@ def bisect_request(url, threshold, nbytes, data_vars, time_indices):
     known initial request size to determine if we bisect the request. The base
     case is when a request is under the threshold. This method will construct
     a list of requests.
-
-    NOTE: Server error reports dataset size = dataset.nbytes / 2. This method
-    will maintain the size reported to ensure that the split is small enough
-    to pass through the threshold.
     """
     if nbytes < threshold:
         logger.debug(f"Request under threshold: {round(nbytes * 10**-6)}/500 mb")
