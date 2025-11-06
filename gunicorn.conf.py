@@ -11,7 +11,7 @@ def pre_request(worker, req):
     profile.enable()
 
 
-def post_request(worker, req, args*):
+def post_request(worker, req):
     print("disabling profiler for request")
     profile.disable()
 

@@ -41,9 +41,6 @@ dask = {extras = ["dataframe"], version = "^2024.3.1"}
 pytest = "^8.1.1"
 pre-commit = "^3.7.0"
 snakeviz = "^2.2.0"
-
-
-[tool.poetry.group."dev.dependencies".dependencies]
 black = "^25.9.0"
 
 [build-system]
