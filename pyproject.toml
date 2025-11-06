@@ -38,10 +38,13 @@ requests = "^2.31.0"
 dask = {extras = ["dataframe"], version = "^2024.3.1"}
 
 [tool.poetry.group.dev.dependencies]
-black = "22.3.0"
 pytest = "^8.1.1"
 pre-commit = "^3.7.0"
 snakeviz = "^2.2.0"
+
+
+[tool.poetry.group."dev.dependencies".dependencies]
+black = "^25.9.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -12,5 +12,5 @@ jobs:
       - uses: actions/setup-python@v2
       - uses: psf/black@stable
         with:
-          black_args: ". --check"
-          version: "22.3.0"
+          options: ". --check"
+          version: "25.9.0"

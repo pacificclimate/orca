@@ -80,7 +80,7 @@ def fill_target_bounds(dataset, targets):
     data_vars = dataset.data_vars
 
     target_list = targets.split(",")
-    for (i, target) in enumerate(target_list):
+    for i, target in enumerate(target_list):
         target_var = target.split("[", 1)[0]
 
         if target_var == target:  # No variable bounds are specified
@@ -102,7 +102,7 @@ def fill_target_bounds(dataset, targets):
                 target_bound_list = target_bounds.split(",")
 
                 # Add end bounds where needed
-                for (j, end) in enumerate(data_vars[target_var].sizes.values()):
+                for j, end in enumerate(data_vars[target_var].sizes.values()):
                     if ":]" in target_bound_list[j]:
                         target_bound_list[j] = target_bound_list[j].replace(
                             ":]", f":{end - 1}]"
@@ -121,7 +121,7 @@ def fill_target_bounds(dataset, targets):
                 target_bound_list = target_bounds.split(",")
 
                 # Replace bounds given by empty brackets with full ranges
-                for (j, end) in enumerate(data_vars[target_var].sizes.values()):
+                for j, end in enumerate(data_vars[target_var].sizes.values()):
                     if target_bound_list[j] == "[]":
                         target_bound_list[j] = f"[0:{end - 1}]"
 
@@ -136,7 +136,8 @@ def fill_target_bounds(dataset, targets):
 def build_all_targets(dataset):
     """Obtain all variable names and associated bounds so that all variables are
     retained when downloading an entire netCDF file. This also ensures the time bounds
-    for the data variables and time coordinate are readily obtainable when bisecting the requests if needed."""
+    for the data variables and time coordinate are readily obtainable when bisecting the requests if needed.
+    """
     dims = dataset.sizes
     targets = ",".join(
         [f"{dim}[0:{end - 1}]" for (dim, end) in dims.items() if dim != "bnds"]
@@ -175,7 +176,7 @@ def bisect_request(url, threshold, nbytes, data_vars, time_indices):
         front = url
         back = url
         bounds_format = r"(\[(\d+)(:\d+){0,1}:(\d+)\])"
-        for (data_var, time_index) in zip(data_vars, time_indices):
+        for data_var, time_index in zip(data_vars, time_indices):
             start_end_format = re.compile(
                 rf"{data_var}{bounds_format}{{{time_index}}}{bounds_format}"
             )  # Last instance of bounds_format is the time component
