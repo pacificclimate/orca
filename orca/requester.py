@@ -15,6 +15,16 @@ def file_from_opendap(url, threshold, outdir, outfile):
     """Write to file from OPeNDAP link"""
     input_dataset = open_dataset(url)
     nbytes = input_dataset.nbytes
+    logger.debug(f"Initial request size: {nbytes} ")
+    # in the past, we have had trouble with servers reporting file sizes
+    # that are off by a factor of 2. When run on one of those servers,
+    # an environment variable can be set to compensate.
+    if os.getenv("SERVER_FILESIZE_ERROR") == "True":
+        logger.debug(
+            "Adjusting reported file size by factor of 2 due to known server issue"
+        )
+        nbytes = nbytes / 2
+
     data_vars = input_dataset.data_vars
     data_vars_with_time = (
         []
