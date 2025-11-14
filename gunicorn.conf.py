@@ -18,4 +18,4 @@ def post_request(worker, req):
 
 def worker_exit(server, worker):
     print("writing profiling results to file")
-    profile.dump_stats("profile.prof")
+    profile.dump_stats("/app/profile.prof")
