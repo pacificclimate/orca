@@ -23,10 +23,10 @@ Other commands can be found in the [docs](https://pipenv.pypa.io/en/latest/).
 
 These environment variables can be set on your workstation command line or in a docker container to configure ORCA server settings.
 
-- `THREDDS_BASE` - https address giving the location of the THREDDS server. used as a default if the caller does not provide one in the calling a URL
+- `THREDDS_BASE` - https:// address giving the location of the THREDDS server, Used as a default if the caller does not provide one in the calling a URL
 - `TMPDIR` - directory to use as a scratch directory
 - `LOG_LEVEL` - how much detail logs should capture. Options from least to most detail: CRITICAL, ERROR, WARNING, INFOR, DEBUG
-- `SERVER_FILESIZE_ERROR` - some THREDDS servers incorrectly report dataset size by a dactor of two; set this variable to "True" to compensate
+- `SERVER_FILESIZE_ERROR` - some THREDDS servers incorrectly report dataset size by a factor of two; set this variable to "True" to compensate
 
 
 ### Local
