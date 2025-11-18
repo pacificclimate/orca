@@ -12,7 +12,7 @@ def orc(
         "THREDDS_BASE",
         default="https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
     ),
-    threshold=5e8,
+    threshold=1e9,  # temporarily trying larger threshold for test purposes
     outdir=os.getenv("TMPDIR", default="/tmp/"),
     outfile="",
     log_level=os.getenv("LOG_LEVEL", default="INFO"),

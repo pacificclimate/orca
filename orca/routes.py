@@ -18,10 +18,7 @@ def orc_route():
     """Wraps orc into a usable route with simplified inputs"""
     filepath = request.args.get("filepath")
     targets = request.args.get("targets", None)
-    thredds_base = os.getenv(
-        "THREDDS_BASE",
-        default="https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
-    )
+    thredds_base = request.args.get("thredds_base", default=os.getenv("THREDDS_BASE"))
     threshold = request.args.get("threshold", 5e8)
     outdir = request.args.get("outdir", os.getenv("TMPDIR", default="/tmp/"))
     outfile = request.args.get("outfile", os.path.basename(filepath))
