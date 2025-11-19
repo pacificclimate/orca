@@ -18,7 +18,7 @@ from orca.requester import to_file
     help="Base path for all OPeNDAP links",
     default=os.getenv(
         "THREDDS_BASE",
-        default="https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+        default="https://beehive.pacificclimate.org/orca-pdp/thredds/thredds/dodsC",
     ),
 )
 @click.option(

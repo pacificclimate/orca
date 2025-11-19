@@ -1,5 +1,6 @@
 """The compiler module runs through all the steps to produce an ORCA output"""
 
+from email.policy import default
 from orca.requester import build_opendap_url, file_from_opendap
 from orca.utils import setup_logging
 import os
@@ -10,9 +11,9 @@ def orc(
     targets=None,
     thredds_base=os.getenv(
         "THREDDS_BASE",
-        default="https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets",
+        default="https://beehive.pacificclimate.org/orca-pdp/thredds/thredds/dodsC",
     ),
-    threshold=5e8,
+    threshold=float(os.getenv("BISECT_REQUEST_THRESHOLD", default=5e8)),
     outdir=os.getenv("TMPDIR", default="/tmp/"),
     outfile="",
     log_level=os.getenv("LOG_LEVEL", default="INFO"),

@@ -23,10 +23,11 @@ Other commands can be found in the [docs](https://pipenv.pypa.io/en/latest/).
 
 These environment variables can be set on your workstation command line or in a docker container to configure ORCA server settings.
 
-- `THREDDS_BASE` - https:// address giving the location of the THREDDS server, Used as a default if the caller does not provide one in the calling a URL
-- `TMPDIR` - directory to use as a scratch directory
-- `LOG_LEVEL` - how much detail logs should capture. Options from least to most detail: CRITICAL, ERROR, WARNING, INFOR, DEBUG
-- `SERVER_FILESIZE_ERROR` - some THREDDS servers incorrectly report dataset size by a factor of two; set this variable to "True" to compensate
+- `THREDDS_BASE` - https:// address giving the location of the THREDDS server. Used if the caller does not provide one in the calling a URL. Defaults to `https://beehive.pacificclimate.org/orca-pdp/thredds/thredds/dodsC`
+- `TMPDIR` - directory to use as a scratch directory. Defaults to `/tmp/`
+- `LOG_LEVEL` - how much detail logs should capture. Options from least to most detail: `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG` . Defaults to `INFO`.
+- `SERVER_FILESIZE_ERROR` - some THREDDS servers incorrectly report dataset size by a factor of two; set this variable to "True" to compensate. Defaults to False.
+- `BISECT_REQUEST_THRESHOLD` - the largest filesize that can be requested from THREDDS in bytes. Should match `Opendap.binlimit` in the THREDDS config file. Defaults to 500MB.
 
 
 ### Local

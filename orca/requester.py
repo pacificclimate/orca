@@ -165,16 +165,16 @@ def build_all_targets(dataset):
 
 
 def bisect_request(url, threshold, nbytes, data_vars, time_indices):
-    """Recursively bisect request until each piece is small enough for THREDDS
+    """Recursively bisect request until each piece is small enough for THREDDS.
 
-    OPeNDAP requests have a limit of 500MB, because of that we want to ensure
-    that the request(s) we send are under that threshold. To do so we use the
-    known initial request size to determine if we bisect the request. The base
-    case is when a request is under the threshold. This method will construct
-    a list of requests.
+    By default, THREDDS instances have a maximum size of 500MB for OpenDAP requests.
+    However, this value is configurable. The correct threshold value will be set from
+    the environment variable BISECT_REQUEST_THRESHOLD to match THREDDS' configuration,
+    or default to 500MB if that environment variable is not set.
+
+    This recursive function will split requests in half along the time dimension until
+    each request is under the given threshold, then return a list of requests.
     """
-    logger.debug("Using hardcoded threshold of 10GB for bisecting")
-    threshold = 1e10
 
     if nbytes < threshold:
         logger.debug(

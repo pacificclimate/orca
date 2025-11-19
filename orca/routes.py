@@ -19,7 +19,9 @@ def orc_route():
     filepath = request.args.get("filepath")
     targets = request.args.get("targets", None)
     thredds_base = request.args.get("thredds_base", default=os.getenv("THREDDS_BASE"))
-    threshold = request.args.get("threshold", 5e8)
+    threshold = request.args.get(
+        "threshold", os.getenv("BISECT_REQUEST_THRESHOLD", default=5e8)
+    )
     outdir = request.args.get("outdir", os.getenv("TMPDIR", default="/tmp/"))
     outfile = request.args.get("outfile", os.path.basename(filepath))
     log_level = os.getenv("LOG_LEVEL", default="INFO")
