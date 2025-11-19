@@ -173,18 +173,18 @@ def bisect_request(url, threshold, nbytes, data_vars, time_indices):
     case is when a request is under the threshold. This method will construct
     a list of requests.
     """
-    logger.debug("Using hardcoded threshold of 2GB for bisecting")
-    threshold = 2e9
+    logger.debug("Using hardcoded threshold of 10GB for bisecting")
+    threshold = 1e10
 
     if nbytes < threshold:
         logger.debug(
-            f"Request under threshold: {round(nbytes * 10**-6)}/{threshold * 10**-6}MB"
+            f"Request under threshold: {round(nbytes * 10**-6)}/{round(threshold * 10**-6)}MB"
         )
         return [url]
 
     else:
         logger.debug(
-            f"Splitting, request over threshold: {round(nbytes * 10**-6)}/{threshold * 10**-6}MB"
+            f"Splitting, request over threshold: {round(nbytes * 10**-6)}/{round(threshold * 10**-6)}MB"
         )
 
         # Bisect data variables
