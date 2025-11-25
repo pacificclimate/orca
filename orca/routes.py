@@ -57,9 +57,11 @@ def orc_route():
                 outfile=outpath.name,
                 log_level=log_level,
             )
-            cProfile.run(
+            cProfile.runctx(
                 "orc(filepath, targets, thredds_base, threshold, outdir='', outfile=outpath.name, log_level=log_level)",
-                "/app/profile",
+                globals(),
+                locals(),
+                "orc_profile.prof",
             )
 
         resp = send_file(
