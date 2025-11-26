@@ -69,4 +69,10 @@ def orc_route():
             as_attachment=True,
             download_name=outfile,
         )
+        cProfile.runctx(
+            "send_file(outpath.name, as_attachment=True, download_name=outfile)",
+            globals(),
+            locals(),
+            "send_file_profile.prof",
+        )
     return resp
