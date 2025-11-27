@@ -57,22 +57,21 @@ def orc_route():
                 outfile=outpath.name,
                 log_level=log_level,
             )
-            cProfile.runctx(
-                "orc(filepath, targets, thredds_base, threshold, outdir='', outfile=outpath.name, log_level=log_level)",
-                globals(),
-                locals(),
-                "orc_profile.prof",
-            )
-
+            # cProfile.runctx(
+            #    "orc(filepath, targets, thredds_base, threshold, outdir='', outfile=outpath.name, log_level=log_level)",
+            #    globals(),
+            #    locals(),
+            #    "orc_profile.prof",
+            # )
         resp = send_file(
             outpath.name,
             as_attachment=True,
             download_name=outfile,
         )
-        cProfile.runctx(
-            "send_file(outpath.name, as_attachment=True, download_name=outfile)",
-            globals(),
-            locals(),
-            "send_file_profile.prof",
-        )
+    #        cProfile.runctx(
+    #            "send_file(outpath.name, as_attachment=True, download_name=outfile)",
+    #            globals(),
+    #            locals(),
+    #            "send_file_profile.prof",
+    #        )
     return resp
